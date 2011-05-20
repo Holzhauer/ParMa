@@ -38,11 +38,17 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	public void initParameters() {
 
 		for (PmParameterReader reader : readers) {
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Initialisation of parameter reader " + reader + " started");
+			}
+			// LOGGING ->
+			
 			reader.initParameters();
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Init parameter reader " + reader);
+				logger.debug("Initialisation of parameter reader " + reader + " finished");
 			}
 			// LOGGING ->
 

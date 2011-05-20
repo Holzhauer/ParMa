@@ -17,7 +17,7 @@
     <target name="svn_infos" description="description">
     	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpath="" />
     	<svn javahl="false" username="holzhauer" password="holzhauer">
-    		<info target="${basedir}"/>
+    		<info target="${project.dir}"/>
     	</svn>
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     	<property name="release.dir" location="C:/Sascha/Releases/Lara//${svn.info.rev}-${DSTAMP}"/>
@@ -25,14 +25,14 @@
 
 
 	<target name="clean">
-		<!-- <delete dir="${docs.dir}" /> -->
+		<delete dir="${docs.dir}" />
 	</target>
 
 	<target name="javadoc_classes" depends="clean" description="generates javadoc and also UML Diagrams, and deletes Map-Files">
 		<echo>"${docs.dir}"</echo>
 		<mkdir dir="${docs.dir}"/>
 		<!-- narrrowing the packagenames more than "de.cesr.lara.components.*" causes invalid links in the map (maybe a link-provision problem...	-->
-	        <javadoc sourcepath="${project.dir}/src" packagenames="de.cesr.parma.*" destdir="${docs.dir}" classpath="${project.dir}/lib/junit-4.4.jar;${project.dir}/lib/log4j-1.2.8.jar;${project.dir}/lib/mysql-connector-java-5.1.12-bin.jar">
+	        <javadoc sourcepath="${project.dir}/src" packagenames="de.cesr.parma.*" destdir="${docs.dir}" classpath="${project.dir}/lib_tools/junit.jar;${project.dir}/lib/log4j-1.2.8.jar;${project.dir}/lib/mysql-connector-java-5.1.12-bin.jar">
 	        	<link href="http://java.sun.com/javase/6/docs/api/"/>
 	        	<link href="http://logging.apache.org/log4j/1.2/apidocs/index.html"/>
 	        	<doclet name="de.cesr.tools.umlgraph.UmlGraphDoc"
@@ -53,7 +53,7 @@
 	
 	<target name="javadoc_package" depends="clean" description="generates javadoc and also UML Diagram">
 		<mkdir dir="${docs.dir}"/>
-	        <javadoc sourcepath="src" packagenames="de.cesr.parma.*" destdir="${docs.dir}" classpath="${project.dir}/lib/junit-4.4.jar;${project.dir}/lib/log4j-1.2.8.jar;${project.dir}/lib/mysql-connector-java-5.1.12-bin.jar">
+	        <javadoc sourcepath="src" packagenames="de.cesr.parma.*"  destdir="${docs.dir}" classpath="${project.dir}/lib_tools/junit.jar;${project.dir}/lib/log4j-1.2.8.jar;${project.dir}/lib/mysql-connector-java-5.1.12-bin.jar">
 	        	   <doclet name="de.cesr.tools.umlgraph.UmlGraphDoc"
 	        	   	path="lib_tools/UmlGraphSvg.jar">
         	        	<param name="-inferrel" />
@@ -98,8 +98,8 @@
     <target name="Make_Doc_Zip" depends="Make_SVG, svn_infos" description="Generate a zipr archive containein javadoc, and other documentation for public use.">
     	<mkdir dir="${release.dir}"/>
     	<zip destfile="${release.dir}/Lara-${svn.info.rev}_Docs.zip">
-    		<zipfileset dir="${basedir}/doc/javadoc" prefix="Lara-${svn.info.rev}/docs/API"/>
-    	    <zipfileset dir="${basedir}/doc/" includes="*.*" prefix="Lara-${svn.info.rev}/docs/manual"/>
+    		<zipfileset dir="${project.dir}/doc/javadoc" prefix="Lara-${svn.info.rev}/docs/API"/>
+    	    <zipfileset dir="${project.dir}/doc/" includes="*.*" prefix="Lara-${svn.info.rev}/docs/manual"/>
     	</zip>
     </target>
 

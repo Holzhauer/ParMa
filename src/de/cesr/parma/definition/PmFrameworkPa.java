@@ -65,6 +65,11 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 	TBLNAME_PARAMS(String.class, "parameterTable"),
 	
 	/**
+	 * Location of XML file that specifies parameters
+	 */
+	XM_PARAMETER_FILE(String.class, "./Parameter.xml"),
+	
+	/**
 	 *  Location of XML file that specifies database settings:
 	 */
 	DB_SETTINGS_FILE(String.class, "./DbSettings.xml");

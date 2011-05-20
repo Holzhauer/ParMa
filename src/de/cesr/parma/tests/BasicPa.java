@@ -31,21 +31,26 @@ import de.cesr.parma.core.PmParameterDefinition;
  * @date 29.06.2010
  * 
  */
-public enum PmTestBasicPa implements PmParameterDefinition {
+public enum BasicPa implements PmParameterDefinition {
 
 	/**
 	 * Number of households a single agents represents in simulation
 	 */
-	NUM_AGENTS(Integer.class, 10);
+	NUM_AGENTS(Integer.class, 10),
+	
+	/**
+	 * 
+	 */
+	MUE(Double.class, 0.5);
 
 	private Class < ? >	type;
 	private Object		defaultValue;
 
-	PmTestBasicPa(Class<?> type) {
+	BasicPa(Class<?> type) {
 		this(type, null);
 	}
 
-	PmTestBasicPa(Class<?> type, Object defaultValue) {
+	BasicPa(Class<?> type, Object defaultValue) {
 		this.type = type;
 		this.defaultValue = defaultValue;
 	}

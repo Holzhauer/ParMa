@@ -5,6 +5,7 @@
 	
 	<property name="dir_sonomode" value="C:/Sascha/Workspace36/SonoMode/lib" />
 	<property name="jar_name" value="ParMa" />
+	<property name="base" value="${basedir}/../.." />
 	
 	<!-- ================================= 
           target: Fetch SVN Revision Number                  	
@@ -12,7 +13,7 @@
     <target name="svn_infos" description="description">
     	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpath="" />
     	<svn javahl="false" username="holzhauer" password="holzhauer">
-    		<info target="${basedir}"/>
+    		<info target="${base}"/>
     	</svn>
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     </target>
@@ -21,13 +22,13 @@
 	
 	<delete file="${dir_sonomode}/${jar_name}.jar"/>
     <jar destfile="${dir_sonomode}/${jar_name}.jar"
-        basedir="${basedir}/bin"
+        basedir="${base}/bin"
         includes="**/*.class"
         update="false"
         compress="true"
         duplicate="add">
        <manifest>
-            <attribute name="Built-By" value="Sascha Holzhauer"/>
+            <attribute name="Built-By" value="Sascha Holzhauer, CESR"/>
             <attribute name="Implementation-Version"  value="${svn.info.rev}"/>
             <attribute name="Built-Date" value="${TODAY}"/>
         </manifest>

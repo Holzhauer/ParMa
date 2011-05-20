@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<parameters>
+	<de.cesr.parma.tests.BasicPa:NUM_AGENTS>100</de.cesr.parma.tests.BasicPa:NUM_AGENTS>
+	<de.cesr.parma.tests.BasicPa:MUE>0.1</de.cesr.parma.tests.BasicPa:MUE>
+</parameters>

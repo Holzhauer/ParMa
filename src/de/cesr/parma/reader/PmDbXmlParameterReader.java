@@ -41,7 +41,7 @@ import de.cesr.parma.definition.PmFrameworkPa;
 
 
 /**
- * Reads the database settings from an XML-File (specified by PmTestBasicPa.DB_SETTINGS_FILE)
+ * Reads the database settings from an XML-File (specified by BasicPa.DB_SETTINGS_FILE)
  * 
  * @author Sascha Holzhauer
  * @date 29.03.2010

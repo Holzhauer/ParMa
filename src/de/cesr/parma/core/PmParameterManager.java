@@ -21,18 +21,20 @@
  */
 package de.cesr.parma.core;
 
+
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 
+
 /**
  * 
- * Defines an interface for classes that provide parameter values. Also defines all parameters used throughout the model. See
- * ParametrFramework_Documentation.doc for further information!
+ * Defines an interface for classes that provide parameter values. Also defines all parameters used throughout the
+ * model. See ParametrFramework_Documentation.doc for further information!
  * 
  * @author Holzhauer
  * @date 08.01.2009
@@ -43,50 +45,11 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	/**
 	 * Logger
 	 */
-	static private Logger							logger		= Logger.getLogger(PmParameterManager.class);
+	static private Logger						logger		= Logger.getLogger(PmParameterManager.class);
 
-	static Map < PmParameterDefinition , Object >	params		= new HashMap < PmParameterDefinition , Object >();
-	static ArrayList < PmParameterDefinition >		definitions	= new ArrayList < PmParameterDefinition >();
-	static PmParameterManager						paraManager;
-
-	/**
-	 * Registers {@link PmParameterDefinition}s to this manager. Usually, parameters are defined by an enumerations that extends
-	 * {@link PmParameterDefinition}
-	 * 
-	 * Created by Holzhauer on 08.01.2009
-	 * 
-	 * @param definitions
-	 */
-	public static void registerParametersDefinitions(Collection < ? extends PmParameterDefinition > definitions) {
-		for (PmParameterDefinition definition : definitions) {
-			PmParameterManager.definitions.add(definition);
-
-			// <- LOGGING
-			if (logger.isDebugEnabled()) {
-				logger.debug("Add defintion " + definition.toString() + " (" + definition.getDefaultValue() + ")");
-			}
-			// LOGGING ->
-
-		}
-	}
-
-	/**
-	 * Registers {@link PmParameterDefinition}s to this manager. Usually, parameters are defined by an enumerations that extends
-	 * {@link PmParameterDefinition}
-	 * 
-	 * @param definitions Created by Sascha Holzhauer on 30.07.2010
-	 */
-	public static void registerParametersDefinitions(PmParameterDefinition[] definitions) {
-		for (PmParameterDefinition definition : definitions) {
-			PmParameterManager.definitions.add(definition);
-
-			// <- LOGGING
-			if (logger.isDebugEnabled()) {
-				logger.debug("Add defintion " + definition.toString() + " (" + definition.getDefaultValue() + ")");
-			}
-			// LOGGING ->
-		}
-	}
+	static Map<PmParameterDefinition, Object>	params		= new HashMap<PmParameterDefinition, Object>();
+	static ArrayList<PmParameterDefinition>		definitions	= new ArrayList<PmParameterDefinition>();
+	static PmParameterManager					paraManager;
 
 	/**
 	 * Get any registered parameter
@@ -115,8 +78,28 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		}
 		// LOGGING ->
 
+		// TODO extend conversion
+		if (definition.getType() == Integer.class && value instanceof String) {
+			value = Integer.parseInt((String) value);
+		} else if (definition.getType() == Double.class && value instanceof String) {
+			value = Double.parseDouble((String) value);
+		} else if (definition.getType() == Float.class && value instanceof String) {
+			value = Float.parseFloat((String) value);
+		} else if (definition.getType() == Long.class && value instanceof String) {
+			value = Long.parseLong((String) value);
+		} else if (definition.getType() == Short.class && value instanceof String) {
+			value = Short.parseShort((String) value);
+		}
+
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Value after conversion: " + value);
+		}
+
 		if (!definition.getType().isInstance(value)) {
-			logger.warn("The given value is not assignable to the type specified in the parameter definition!");
+
+			logger.warn("The given value (" + value + ") of type " + value.getClass() + " is not assignable to the "
+					+ "type specified in the parameter definition (" + definition.getType() + ")!");
 		}
 		params.put(definition, value);
 	}
@@ -132,6 +115,11 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		paraManager.initParameters();
 	}
 
+	/**
+	 * Register a parameter reader.
+	 * 
+	 * @param reader the reader to register Created by Sascha Holzhauer on 20.05.2011
+	 */
 	public static void registerReader(PmParameterReader reader) {
 		if (paraManager == null) {
 			paraManager = new PmParameterManager();

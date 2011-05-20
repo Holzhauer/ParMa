@@ -135,6 +135,11 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 
 						logger.info("Parameter " + Enum.valueOf((Class<Enum>) Class.forName(param_class), param_name)
 								+ " read from" + " database. Value: " + result.getObject(i));
+					} else {
+						if (!result.getMetaData().getColumnName(i).equals("id")) {
+							logger.warn("The column " + result.getMetaData().getColumnName(i) + " of table " +
+									t1 + " is not in proper parameter format (CLASS:PARAMETER_NAME)");
+						}
 					}
 
 				} catch (IllegalArgumentException e) {

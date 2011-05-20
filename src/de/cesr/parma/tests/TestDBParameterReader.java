@@ -54,7 +54,6 @@ public class TestDBParameterReader {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		PmParameterManager.registerParametersDefinitions(Arrays.asList(PmFrameworkPa.values()));
 		PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID, 1);
 		PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE, "./src/de/cesr/parma/tests/res/DBSettingsMysql3.xml");
 		PmDbXmlParameterReader dbXmlReader = new PmDbXmlParameterReader();
@@ -78,9 +77,9 @@ public class TestDBParameterReader {
 	 */
 	@Test
 	public final void testInitParameters() {
-		assertTrue("", 0 < (Integer) PmParameterManager.getParameter(PmTestBasicPa.NUM_AGENTS));
+		assertTrue("", 10 == ((Integer) PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.init();
-		assertEquals("", 10, PmParameterManager.getParameter(PmTestBasicPa.NUM_AGENTS));
+		assertEquals("", 100, ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
 	}
 
 	/**
