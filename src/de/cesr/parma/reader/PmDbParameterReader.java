@@ -71,7 +71,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	 * 
 	 */
 	public PmDbParameterReader() {
-		this.paramSetId = PmFrameworkPa.TBLNAME_PARAMS;
+		this.paramSetId = PmFrameworkPa.PARAM_SET_ID;
 	}
 	/**
 	 * @see de.cesr.parma.core.PmAbstractParameterReader#initParameters()
@@ -83,10 +83,6 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 		try {
 			if (con == null || con.isClosed()) {
 				con = getConnection();
-			}
-			if (((String) PmParameterManager.getParameter(PmFrameworkPa.USER)).equals("holzhauer")) {
-				con.setCatalog("holzhauer");
-				PmParameterManager.setParameter(PmFrameworkPa.TBLNAME_PARAMS, "kubus_param_paramsets");
 			}
 		} catch (SQLException e1) {
 		} catch (InstantiationException e) {
