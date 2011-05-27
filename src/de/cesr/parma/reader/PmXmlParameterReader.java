@@ -69,56 +69,68 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 	 * 
 	 */
 	public PmXmlParameterReader() {
-		this.settingsFile = PmFrameworkPa.XM_PARAMETER_FILE;
+		this.settingsFile = PmFrameworkPa.XML_PARAMETER_FILE;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void initParameters() {
 		try {
-			File file = new File((String) PmParameterManager.getParameter(settingsFile));
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db;
 			
-			db = dbf.newDocumentBuilder();
-
-			Document doc;
-
-			doc = db.parse(file);
-
-			doc.getDocumentElement().normalize();
-			
-			// get first "parameter" element
-			Element parameterElem = (Element) doc.getElementsByTagName("parameters").item(0);
-			if (parameterElem.hasChildNodes()) {
-				NodeList parameterDefinitions = parameterElem.getChildNodes();
-				for (int i = 0; i < parameterDefinitions.getLength(); i++) {					
-					if (parameterDefinitions.item(i).getNodeType() == Node.ELEMENT_NODE) {
-						Element e = (Element) parameterDefinitions.item(i);
-						String tagName = e.getTagName();
-						String param_class = tagName.split(":")[0];
-						String param_name = tagName.split(":")[1];
-						
-						String value = e.getFirstChild().getNodeValue();
-						
-						PmParameterDefinition definition;
-						
-						try {
-							definition = (PmParameterDefinition) Enum.valueOf((Class<Enum>) Class
-									.forName(param_class), param_name);
-							logger.debug("Set parameter " + tagName + " to " + value);
-							setParameter(definition, value);
-							
-						} catch (ClassNotFoundException e1) {
-							logger.error("No such parameter definition in classpath: " + tagName);
-							e1.printStackTrace();
-						}
-					}
+			logger.info("Read Database settings from XML-File " + settingsFile); 
 					
+			File file = new File((String) PmParameterManager.getParameter(settingsFile));
+			
+			if (!file.exists()) {
+				logger.warn("Settings XML file (" + file + ") does not exist!");
+			} else {
+			
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db;
+				
+				db = dbf.newDocumentBuilder();
+	
+				Document doc;
+	
+				doc = db.parse(file);
+	
+				doc.getDocumentElement().normalize();
+				
+				// get first "parameter" element
+				Element parameterElem = (Element) doc.getElementsByTagName("parameters").item(0);
+				if (parameterElem.hasChildNodes()) {
+					NodeList parameterDefinitions = parameterElem.getChildNodes();
+					for (int i = 0; i < parameterDefinitions.getLength(); i++) {					
+						if (parameterDefinitions.item(i).getNodeType() == Node.ELEMENT_NODE) {
+							Element e = (Element) parameterDefinitions.item(i);
+							String tagName = e.getTagName();
+							String param_class = tagName.split(":")[0];
+							String param_name = tagName.split(":")[1];
+							
+							String value = e.getFirstChild().getNodeValue();
+							
+							PmParameterDefinition definition;
+							
+							try {
+								definition = (PmParameterDefinition) Enum.valueOf((Class<Enum>) Class
+										.forName(param_class), param_name);
+								
+								
+								
+								logger.debug("Set parameter " + tagName + " to " + value);
+								setParameter(definition, value);
+								
+							} catch (ClassNotFoundException e1) {
+								logger.error("No such parameter definition in classpath: " + tagName);
+								e1.printStackTrace();
+							}
+						}
+						
+					}
 				}
-			}
-			else {
-				logger.warn("Parameter XML file " + PmParameterManager.getParameter(settingsFile) + " does not contain" +
-						" any parameter definitions");
+				else {
+					logger.warn("Parameter XML file " + PmParameterManager.getParameter(settingsFile) + " does not contain" +
+							" any parameter definitions");
+				}
 			}
 		} catch (ParserConfigurationException e) {
 			logger.error("Error: " + e.getMessage());

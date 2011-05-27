@@ -25,8 +25,6 @@ package de.cesr.parma.tests;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +71,7 @@ public class TestDBParameterReader {
 	}
 
 	/**
-	 * Test method for {@link param.framework.DBParameterReader#initParameters()}.
+	 * Test method for {@link de.cesr.parma.reader.PmDbParameterReader#initParameters()}.
 	 */
 	@Test
 	public final void testInitParameters() {
@@ -83,7 +81,7 @@ public class TestDBParameterReader {
 	}
 
 	/**
-	 * Test method for {@link param.framework.AbstractParameterReader#registerParameterReader(param.ParameterReader)}.
+	 * Test method for {@link de.cesr.parma.core.PmAbstractParameterReader#registerParameterReader(de.cesr.parma.core.PmParameterReader)}.
 	 */
 	@Test
 	public final void testRegisterParameterReader() {

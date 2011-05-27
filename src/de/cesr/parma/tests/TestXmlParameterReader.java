@@ -26,7 +26,7 @@ public class TestXmlParameterReader {
 	@Before
 	public void setUp() throws Exception {
 		PmParameterManager.registerReader(new PmXmlParameterReader());
-		PmParameterManager.setParameter(PmFrameworkPa.XM_PARAMETER_FILE, "./src/de/cesr/parma/tests/res/TestParameter.xml");
+		PmParameterManager.setParameter(PmFrameworkPa.XML_PARAMETER_FILE, "./src/de/cesr/parma/tests/res/TestParameter.xml");
 	}
 
 	/**

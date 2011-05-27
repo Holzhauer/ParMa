@@ -22,12 +22,12 @@
 	
 	<delete file="${dir_sonomode}/${jar_name}.jar"/>
     <jar destfile="${dir_sonomode}/${jar_name}.jar"
-        basedir="${base}/bin"
-        includes="**/*.class"
         update="false"
         compress="true"
         duplicate="add">
-       <manifest>
+    	<fileset dir="${base}/bin"/>
+    	<fileset dir="${base}/src"/>
+    	<manifest>
             <attribute name="Built-By" value="Sascha Holzhauer, CESR"/>
             <attribute name="Implementation-Version"  value="${svn.info.rev}"/>
             <attribute name="Built-Date" value="${TODAY}"/>

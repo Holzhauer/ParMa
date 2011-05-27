@@ -29,6 +29,7 @@ import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,6 +50,11 @@ import de.cesr.parma.definition.PmFrameworkPa;
  */
 public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(PmDbXmlParameterReader.class);
+	
 	PmParameterDefinition settingsFile;
 	
 	/**
@@ -72,44 +78,51 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 	 */
 	@Override
 	public void initParameters() {
-		try {
-			File file = new File((String) PmParameterManager.getParameter(settingsFile));
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file);
-			doc.getDocumentElement().normalize();
-
-			NodeList nodeLst = doc.getElementsByTagName("db");
-			Node fstNode = nodeLst.item(0);
-			if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
-				Element fstElmnt = (Element) fstNode;
-				NodeList fstNmElmntLst = fstElmnt.getElementsByTagName("SQL_LOCATION");
-				Element fstNmElmnt = (Element) fstNmElmntLst.item(0);
-				NodeList fstNm = fstNmElmnt.getChildNodes();
-				setParameter(PmFrameworkPa.LOCATION, (fstNm.item(0)).getNodeValue());
-
-				NodeList dbnameNmElmntLst = fstElmnt.getElementsByTagName("SQL_DBNAME");
-				Element dbnameNmElmnt = (Element) dbnameNmElmntLst.item(0);
-				NodeList dbnameNm = dbnameNmElmnt.getChildNodes();
-				setParameter(PmFrameworkPa.DBNAME, (dbnameNm.item(0)).getNodeValue());
-
-				NodeList userNmElmntLst = fstElmnt.getElementsByTagName("SQL_USER");
-				Element userNmElmnt = (Element) userNmElmntLst.item(0);
-				NodeList userNm = userNmElmnt.getChildNodes();
-				setParameter(PmFrameworkPa.USER, (userNm.item(0)).getNodeValue());
-
-				NodeList pwNmElmntLst = fstElmnt.getElementsByTagName("SQL_PASSWORD");
-				Element pwNmElmnt = (Element) pwNmElmntLst.item(0);
-				NodeList pwNm = pwNmElmnt.getChildNodes();
-				setParameter(PmFrameworkPa.PASSWORD, (pwNm.item(0)).getNodeValue());
-
-				NodeList tbNmElmntLst = fstElmnt.getElementsByTagName("SQL_TBLNAME_PARAMS");
-				Element tbNmElmnt = (Element) tbNmElmntLst.item(0);
-				NodeList tbNm = tbNmElmnt.getChildNodes();
-				setParameter(PmFrameworkPa.TBLNAME_PARAMS, (tbNm.item(0)).getNodeValue());
+		
+		logger.info("Read Database settings from XML-File " + PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE));
+		File file = new File((String) PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE));
+		
+		if (!file.exists()) {
+			logger.warn("DB Settings XML file (" + PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE) + ") does not exist!");
+		} else {
+			try {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc = db.parse(file);
+				doc.getDocumentElement().normalize();
+		
+				NodeList nodeLst = doc.getElementsByTagName("db");
+				Node fstNode = nodeLst.item(0);
+				if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element fstElmnt = (Element) fstNode;
+					NodeList fstNmElmntLst = fstElmnt.getElementsByTagName("SQL_LOCATION");
+					Element fstNmElmnt = (Element) fstNmElmntLst.item(0);
+					NodeList fstNm = fstNmElmnt.getChildNodes();
+					setParameter(PmFrameworkPa.LOCATION, (fstNm.item(0)).getNodeValue());
+		
+					NodeList dbnameNmElmntLst = fstElmnt.getElementsByTagName("SQL_DBNAME");
+					Element dbnameNmElmnt = (Element) dbnameNmElmntLst.item(0);
+					NodeList dbnameNm = dbnameNmElmnt.getChildNodes();
+					setParameter(PmFrameworkPa.DBNAME, (dbnameNm.item(0)).getNodeValue());
+		
+					NodeList userNmElmntLst = fstElmnt.getElementsByTagName("SQL_USER");
+					Element userNmElmnt = (Element) userNmElmntLst.item(0);
+					NodeList userNm = userNmElmnt.getChildNodes();
+					setParameter(PmFrameworkPa.USER, (userNm.item(0)).getNodeValue());
+		
+					NodeList pwNmElmntLst = fstElmnt.getElementsByTagName("SQL_PASSWORD");
+					Element pwNmElmnt = (Element) pwNmElmntLst.item(0);
+					NodeList pwNm = pwNmElmnt.getChildNodes();
+					setParameter(PmFrameworkPa.PASSWORD, (pwNm.item(0)).getNodeValue());
+		
+					NodeList tbNmElmntLst = fstElmnt.getElementsByTagName("SQL_TBLNAME_PARAMS");
+					Element tbNmElmnt = (Element) tbNmElmntLst.item(0);
+					NodeList tbNm = tbNmElmnt.getChildNodes();
+					setParameter(PmFrameworkPa.TBLNAME_PARAMS, (tbNm.item(0)).getNodeValue());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }

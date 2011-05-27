@@ -89,6 +89,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 			value = Long.parseLong((String) value);
 		} else if (definition.getType() == Short.class && value instanceof String) {
 			value = Short.parseShort((String) value);
+		} else if (definition.getType() == Boolean.class && value instanceof String) {
+			value = Boolean.parseBoolean((String) value);
 		}
 
 		// <- LOGGING
