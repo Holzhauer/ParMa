@@ -28,7 +28,7 @@
 		<delete dir="${docs.dir}" />
 	</target>
 
-	<target name="javadoc_classes" depends="clean" description="generates javadoc and also UML Diagrams, and deletes Map-Files">
+	<target name="javadoc_classes" description="generates javadoc and also UML Diagrams, and deletes Map-Files">
 		<echo>"${docs.dir}"</echo>
 		<mkdir dir="${docs.dir}"/>
 		<!-- narrrowing the packagenames more than "de.cesr.lara.components.*" causes invalid links in the map (maybe a link-provision problem...	-->
