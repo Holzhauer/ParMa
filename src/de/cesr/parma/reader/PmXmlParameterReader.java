@@ -66,7 +66,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 	}
 	
 	/**
-	 * 
+	 * Uses {@link PmFrameworkPa#XML_PARAMETER_FILE as source.}
 	 */
 	public PmXmlParameterReader() {
 		this.settingsFile = PmFrameworkPa.XML_PARAMETER_FILE;

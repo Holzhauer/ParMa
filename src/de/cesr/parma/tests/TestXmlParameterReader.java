@@ -25,6 +25,7 @@ public class TestXmlParameterReader {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		PmParameterManager.reset();
 		PmParameterManager.registerReader(new PmXmlParameterReader());
 		PmParameterManager.setParameter(PmFrameworkPa.XML_PARAMETER_FILE, "./src/de/cesr/parma/tests/res/TestParameter.xml");
 	}
@@ -43,7 +44,7 @@ public class TestXmlParameterReader {
 	 */
 	@Test
 	public final void testInitParameters() {
-		assertEquals("", 10, PmParameterManager.getParameter(BasicPa.NUM_AGENTS));
+		assertEquals("", 10, ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.init();
 		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
 	}

@@ -47,17 +47,30 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 */
 	static private Logger						logger		= Logger.getLogger(PmParameterManager.class);
 
-	static Map<PmParameterDefinition, Object>	params		= new HashMap<PmParameterDefinition, Object>();
-	static ArrayList<PmParameterDefinition>		definitions	= new ArrayList<PmParameterDefinition>();
+	static Map<PmParameterDefinition, Object>	params;
+	static ArrayList<PmParameterDefinition>		definitions;
 	static PmParameterManager					paraManager;
 
+
+	static {
+		initCollections();
+	}
+	
+	/**
+	 * Initialise collections for params and definitions. 
+	 */
+	private static void initCollections() {
+		params		= new HashMap<PmParameterDefinition, Object>();
+		definitions	= new ArrayList<PmParameterDefinition>();
+	}
+	
 	/**
 	 * Get any registered parameter
 	 * 
 	 * @param parameter the {@link PmParameterDefinition} whose value is requested
 	 * @return the parameter's current value
 	 * 
-	 *         Created by Holzhauer on 08.01.2009
+	 * Created by Holzhauer on 08.01.2009
 	 */
 	public static Object getParameter(PmParameterDefinition parameter) {
 		if (params.containsKey(parameter)) {
@@ -136,5 +149,6 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		paraManager = null;
 		params = null;
 		definitions = null;
+		initCollections();
 	}
 }

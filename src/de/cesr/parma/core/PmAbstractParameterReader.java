@@ -80,7 +80,7 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	
 	/**
 	 * Cancels registration of the given reader, i.e. it is no longer used to initialise parameters.
-	 * @param reader reader to deregisters
+	 * @param reader reader to deregister
 	 */
 	public void deregisterParameterReader(PmParameterReader reader) {
 		readers.remove(reader);
@@ -89,7 +89,7 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	/**
 	 * Cancels registration of all registered readers.
 	 */
-	public void derigsterAll() {
+	public void deregisterAll() {
 		readers.clear();
 	}
 }

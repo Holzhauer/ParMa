@@ -20,7 +20,7 @@
 
 	<target name="jar_creation" depends="svn_infos" description="Creates a jar file from ParMa">
 	
-	<delete file="${dir_sonomode}/${jar_name}.jar"/>
+	<!--delete file="${dir_sonomode}/${jar_name}.jar"/-->
     <jar destfile="${dir_sonomode}/${jar_name}.jar"
         update="false"
         compress="true"

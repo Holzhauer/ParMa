@@ -52,6 +52,7 @@ public class TestDBParameterReader {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		PmParameterManager.reset();
 		PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID, 1);
 		PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE, "./src/de/cesr/parma/tests/res/DBSettingsMysql3.xml");
 		PmDbXmlParameterReader dbXmlReader = new PmDbXmlParameterReader();
