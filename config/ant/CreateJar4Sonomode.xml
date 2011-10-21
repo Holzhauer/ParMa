@@ -3,7 +3,7 @@
 
 <project default="jar_creation">
 	
-	<property name="dir_sonomode" value="C:/Sascha/Workspace36/SonoMode/lib" />
+	<property name="dir_sonomode" value="C:/Sascha/Workspace37/SonoMode/lib" />
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
 	

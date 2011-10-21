@@ -111,7 +111,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 			logger.debug("Value after conversion: " + value);
 		}
 
-		if (!definition.getType().isInstance(value)) {
+		if (!definition.getType().isAssignableFrom(value.getClass())) {
 
 			logger.warn("The given value (" + value + ") of type " + value.getClass() + " is not assignable to the "
 					+ "type specified in the parameter definition (" + definition.getType() + ")!");
