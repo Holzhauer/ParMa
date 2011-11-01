@@ -44,7 +44,12 @@ import de.cesr.parma.definition.PmFrameworkPa;
 
 
 /**
+ * 
+ * Parameter retrieval from MySQL databases
  * PARameter MAnager
+ * 
+ * This reader enables the use of other db settings and tables than defined in PmFrameworkPa
+ * via setter methods for theses settings. However, defaults are the values of {@link PmFrameworkPa}.
  * 
  * @author Sascha Holzhauer
  * @date 29.06.2010
@@ -60,6 +65,13 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	private Connection		con;
 	private PmParameterDefinition paramSetId;
 
+	
+	protected PmParameterDefinition dbTable 	= PmFrameworkPa.TBLNAME_PARAMS;
+	protected PmParameterDefinition dbLocation	= PmFrameworkPa.LOCATION;
+	protected PmParameterDefinition dbName		= PmFrameworkPa.DBNAME	;
+	protected PmParameterDefinition dbUser		= PmFrameworkPa.USER;
+	protected PmParameterDefinition dbPassword	= PmFrameworkPa.PASSWORD;
+	
 	/**
 	 * @param paramSetId the parameter definition that specifies the parameter set id for which parameter definitions shall be fetched from DB,
 	 */
@@ -93,7 +105,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 			e.printStackTrace();
 		}
 		
-		String t1 = (String) getParameter(PmFrameworkPa.TBLNAME_PARAMS);
+		String t1 = (String) getParameter(dbTable);
 
 		String sql = "SELECT * FROM `" + t1 + "` AS t1 WHERE t1.id = " + getParameter(this.paramSetId) + ";";
 		logger.debug("SQL-statement to fetch params: " + sql);
@@ -196,22 +208,22 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 			SQLException {
 
 		Properties properties = new Properties();
-		properties.put("user", getParameter(PmFrameworkPa.USER));
-		properties.put("password", getParameter(PmFrameworkPa.PASSWORD));
-		String connectTo = "jdbc:mysql://" + getParameter(PmFrameworkPa.LOCATION) 
-			+ (((String) getParameter(PmFrameworkPa.LOCATION)).endsWith("/") ? "" : "/")+ getParameter(PmFrameworkPa.DBNAME);
+		properties.put("user", getParameter(dbUser));
+		properties.put("password", getParameter(dbPassword));
+		String connectTo = "jdbc:mysql://" + getParameter(dbLocation) 
+			+ (((String) getParameter(dbLocation)).endsWith("/") ? "" : "/")+ getParameter(dbName);
 
 		// error handling:
-		if (getParameter(PmFrameworkPa.LOCATION) == null) {
+		if (getParameter(dbLocation) == null) {
 			throw new IllegalArgumentException("Invalid database settings: Invalid database location!");
 		}
-		if (getParameter(PmFrameworkPa.DBNAME) == null) {
+		if (getParameter(dbName) == null) {
 			throw new IllegalArgumentException("Invalid database settings: Invalid database name!");
 		}
-		if (getParameter(PmFrameworkPa.USER) == null) {
+		if (getParameter(dbUser) == null) {
 			throw new IllegalArgumentException("Invalid database settings: Invalid user name!");
 		}
-		if (getParameter(PmFrameworkPa.PASSWORD) == null) {
+		if (getParameter(dbPassword) == null) {
 			throw new IllegalArgumentException("Invalid database settings: Invalid password!");
 		}
 
@@ -230,5 +242,75 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return the dbTable
+	 */
+	public PmParameterDefinition getDbTable() {
+		return dbTable;
+	}
+
+	/**
+	 * @param dbTable the dbTable to set
+	 */
+	public void setDbTable(PmParameterDefinition dbTable) {
+		this.dbTable = dbTable;
+	}
+
+	/**
+	 * @return the dbLocation
+	 */
+	public PmParameterDefinition getDbLocation() {
+		return dbLocation;
+	}
+
+	/**
+	 * @param dbLocation the dbLocation to set
+	 */
+	public void setDbLocation(PmParameterDefinition dbLocation) {
+		this.dbLocation = dbLocation;
+	}
+
+	/**
+	 * @return the dbName
+	 */
+	public PmParameterDefinition getDbName() {
+		return dbName;
+	}
+
+	/**
+	 * @param dbName the dbName to set
+	 */
+	public void setDbName(PmParameterDefinition dbName) {
+		this.dbName = dbName;
+	}
+
+	/**
+	 * @return the dbUser
+	 */
+	public PmParameterDefinition getDbUser() {
+		return dbUser;
+	}
+
+	/**
+	 * @param dbUser the dbUser to set
+	 */
+	public void setDbUser(PmParameterDefinition dbUser) {
+		this.dbUser = dbUser;
+	}
+
+	/**
+	 * @return the dbPassword
+	 */
+	public PmParameterDefinition getDbPassword() {
+		return dbPassword;
+	}
+
+	/**
+	 * @param dbPassword the dbPassword to set
+	 */
+	public void setDbPassword(PmParameterDefinition dbPassword) {
+		this.dbPassword = dbPassword;
 	}
 }
