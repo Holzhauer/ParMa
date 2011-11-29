@@ -5,11 +5,13 @@ package de.cesr.parma.tests;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Before;
 import org.junit.Test;
 
 import de.cesr.parma.core.PmParameterDefinition;
 import de.cesr.parma.core.PmParameterManager;
+import de.cesr.parma.definition.PmFrameworkPa;
 import de.cesr.parma.reader.PmXmlParameterReader;
 
 /**
@@ -38,6 +40,11 @@ public class TestPmParameterManager {
 		PmParameterManager.registerReader(xmlReader);
 	}
 
+	@Test
+	public void testLogValues() {
+		PmParameterManager.logParameterValues((PmParameterDefinition[])PmFrameworkPa.values());
+	}
+	
 	/**
 	 * Test method for {@link de.cesr.parma.core.PmParameterManager#reset()}.
 	 */

@@ -24,10 +24,15 @@ package de.cesr.parma.core;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+
+import de.cesr.parma.definition.PmFrameworkPa;
 
 
 
@@ -120,8 +125,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	}
 
 	/**
-	 * 
-	 * Created by Sascha Holzhauer on 15.09.2010
+	 * Let registered {@link PmParameterReader}s read parameters.
 	 */
 	public static void init() {
 		if (paraManager == null) {
@@ -133,7 +137,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	/**
 	 * Register a parameter reader.
 	 * 
-	 * @param reader the reader to register Created by Sascha Holzhauer on 20.05.2011
+	 * @param reader the reader to register
 	 */
 	public static void registerReader(PmParameterReader reader) {
 		if (paraManager == null) {
@@ -142,8 +146,50 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		paraManager.registerParameterReader(reader);
 	}
 
+	
 	/**
-	 * Set every field to null Created by Sascha Holzhauer on 30.06.2010
+	 * Logs the current parameter values for parameters that were read into this
+	 * parameter manager by {@link PmParameterReader}s before. The logger name is
+	 * <code><de.cesr.parma.core.PmParameterManager.values</code>.
+	 * To log all parameter values including the default values for those 
+	 * that have not been read use {@link #logParameterValues(PmParameterDefinition[]...)}. 
+	 */
+	public static void logParameterValues() {
+		Logger valueLogger = Logger.getLogger(PmParameterManager.class.getName() + ".values");
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
+		for (Entry<PmParameterDefinition, Object> entry : params.entrySet()) {
+			buffer.append("\t" + entry.getKey() + System.getProperty("line.separator") + "\t\t" + entry.getValue());
+		}
+		valueLogger.info(buffer.toString());
+	}
+	
+	/**
+	 * Logs the current parameter values for the parameters defined
+	 * in the given arrays of type {@link PmParameterDefinition}s. These
+	 * can be obtained by <code>(PmParameterDefinition[])PmFrameworkPa.values()</code>.
+	 * The logger name is <code><de.cesr.parma.core.PmParameterManager.values</code>.
+	 * @param params
+	 */
+	public static void logParameterValues(PmParameterDefinition[] ... params) {
+		Collection<PmParameterDefinition> paramDefs = new ArrayList<PmParameterDefinition>();
+		for (PmParameterDefinition[] item : params) {
+			paramDefs.addAll(Arrays.asList(item));
+		}
+		Logger valueLogger = Logger.getLogger(PmParameterManager.class.getName() + ".values");
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
+		
+		for (PmParameterDefinition parameterDef : paramDefs) {
+			buffer.append("\t" + parameterDef.toString() + System.getProperty("line.separator") + "\t -> " + 
+					getParameter(parameterDef) + System.getProperty("line.separator"));
+		}
+		valueLogger.info(buffer.toString());
+	}
+	
+	
+	/**
+	 * Set every field to null
 	 */
 	public static void reset() {
 		paraManager = null;
