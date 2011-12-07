@@ -49,6 +49,12 @@
 	<img alt="Parameter Framework" src="./res/ParameterManagement.png">
 	
 
+	<h2>Known Problems</h2>
+	<h3>Parallel Computing</h3>
+	<p class="text">For instance, if you want to instantiate in parallel several objects of a class with 
+	different parameter values using ParMa this could cause problems. The various instantiation
+	processes all access the same parameter through ParMa. Therefore, it is hard to assign
+	various values to the same parameter without causing side effects.</p>
 <body>
 
 </html>

@@ -32,8 +32,6 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
-import de.cesr.parma.definition.PmFrameworkPa;
-
 
 
 /**
@@ -110,7 +108,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		} else if (definition.getType() == Boolean.class && value instanceof String) {
 			value = Boolean.parseBoolean((String) value);
 		}
-
+		
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Value after conversion: " + value);
@@ -124,6 +122,18 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		params.put(definition, value);
 	}
 
+
+	/**
+	 * Copies the current parameter value of source to the parameter
+	 * definition target.
+	 * 
+	 * @param source
+	 * @param target
+	 */
+	public static void copyParameterValue(PmParameterDefinition source, PmParameterDefinition target) {
+		setParameter(source, getParameter(target));
+	}
+	
 	/**
 	 * Let registered {@link PmParameterReader}s read parameters.
 	 */

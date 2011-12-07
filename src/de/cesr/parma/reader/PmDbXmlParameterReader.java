@@ -73,14 +73,13 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 	
 	
 	/**
-	 * 
-	 * Created by Sascha Holzhauer on 29.06.2010
+	 * Read parameters from the XML file
 	 */
 	@Override
 	public void initParameters() {
 		
-		logger.info("Read Database settings from XML-File " + PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE));
-		File file = new File((String) PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE));
+		logger.info("Read Database settings from XML-File " + PmParameterManager.getParameter(settingsFile));
+		File file = new File((String) PmParameterManager.getParameter(settingsFile));
 		
 		if (!file.exists()) {
 			logger.warn("DB Settings XML file (" + PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE) + ") does not exist!");
