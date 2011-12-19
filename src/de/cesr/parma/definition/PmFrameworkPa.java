@@ -22,6 +22,7 @@
 package de.cesr.parma.definition;
 
 import de.cesr.parma.core.PmParameterDefinition;
+import de.cesr.parma.core.PmParameterManager;
 
 
 /**
@@ -55,12 +56,12 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 
 	/**
 	 * the parameter definition that specifies the parameter set id
-	 * for which parameter definitions shall be fetched from DB
+	 * for which parameter defualtParams shall be fetched from DB
 	 */
 	PARAM_SET_ID(Integer.class, 1),
 	
 	/**
-	 * Tablename of parameter table
+	 * Table name of parameter table
 	 */
 	TBLNAME_PARAMS(String.class, "parameterTable"),
 	
@@ -85,6 +86,12 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 	PmFrameworkPa(Class<?> type, Object defaultValue) {
 		this.type = type;
 		this.defaultValue = defaultValue;
+	}
+	
+	PmFrameworkPa(Class<?> type, PmParameterDefinition defaultDefinition) {
+		this.type = type;
+		this.defaultValue = defaultDefinition.getDefaultValue();
+		PmParameterManager.setDefaultParameterDef(this, defaultDefinition);
 	}
 
 	public Class < ? > getType() {

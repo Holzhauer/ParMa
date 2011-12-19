@@ -5,7 +5,7 @@
 	
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
-	<property name="dir_kubus" value="${base}/../KUBUS_Proto01/lib" />
+	<property name="dir_sesam" value="${base}/../SesamGIM/libs" />
 	
 	<property name="svn.info.rev" value="Not defined"/>
 	
@@ -22,8 +22,8 @@
 
 	<target name="jar_creation" description="Creates a jar file from ParMa">
 	
-	<!--delete file="${dir_kubus}/${jar_name}.jar"/-->
-    <jar destfile="${dir_kubus}/${jar_name}.jar"
+	<!--delete file="${dir_sesam}/${jar_name}.jar"/-->
+    <jar destfile="${dir_sesam}/${jar_name}.jar"
         update="false"
         compress="true"
         duplicate="add">

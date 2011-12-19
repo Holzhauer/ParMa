@@ -21,8 +21,6 @@
  */
 package de.cesr.parma.core;
 
-
-
 /**
  * 
  * @author Sascha Holzhauer
@@ -34,15 +32,18 @@ public interface PmParameterDefinition {
 	/**
 	 * Return the type of this parameter
 	 * 
-	 * @return the type of this parameter Created by Sascha Holzhauer on 28.06.2010
+	 * @return the type of this parameter
 	 */
-	public Class < ? > getType();
+	public Class<?> getType();
 
 	/**
-	 * Returns the default value that is assigned to this parameter at definition
+	 * Returns the default value that is assigned to this parameter at
+	 * definition
 	 * 
-	 * @return the parameter's default value Created by Sascha Holzhauer on 28.06.2010
+	 * @return the parameter's default value
 	 */
 	public Object getDefaultValue();
+	
+	public Class<?> getDeclaringClass();
 
 }

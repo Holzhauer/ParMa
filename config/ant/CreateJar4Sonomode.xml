@@ -3,9 +3,11 @@
 
 <project default="jar_creation">
 	
-	<property name="dir_sonomode" value="C:/Sascha/Workspace37/SonoMode/lib" />
+	<property name="dir_sonomode" value="${basedir}/../../../SonoMode/lib" />
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
+	
+	<property name="svn.info.rev" value="Not defined"/>
 	
 	<!-- ================================= 
           target: Fetch SVN Revision Number                  	
@@ -18,7 +20,7 @@
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     </target>
 
-	<target name="jar_creation" depends="svn_infos" description="Creates a jar file from ParMa">
+	<target name="jar_creation" description="Creates a jar file from ParMa">
 	
 	<!--delete file="${dir_sonomode}/${jar_name}.jar"/-->
     <jar destfile="${dir_sonomode}/${jar_name}.jar"

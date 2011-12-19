@@ -51,46 +51,62 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	static private Logger						logger		= Logger.getLogger(PmParameterManager.class);
 
 	static Map<PmParameterDefinition, Object>	params;
-	static ArrayList<PmParameterDefinition>		definitions;
+	static Map<PmParameterDefinition, PmParameterDefinition>
+												defaultParams;
 	static PmParameterManager					paraManager;
 
 
 	static {
 		initCollections();
+		defaultParams	= new HashMap<PmParameterDefinition,PmParameterDefinition>();
 	}
 	
 	/**
-	 * Initialise collections for params and definitions. 
+	 * Initialise collections for params and defualtParams. 
 	 */
 	private static void initCollections() {
-		params		= new HashMap<PmParameterDefinition, Object>();
-		definitions	= new ArrayList<PmParameterDefinition>();
+		params			= new HashMap<PmParameterDefinition, Object>();
 	}
 	
 	/**
-	 * Get any registered parameter
+	 * Get any registered parameter.
+	 * If no value is registered for the given parameter
+	 * it request the default parameter and return it if defined.
 	 * 
 	 * @param parameter the {@link PmParameterDefinition} whose value is requested
 	 * @return the parameter's current value
-	 * 
-	 * Created by Holzhauer on 08.01.2009
 	 */
 	public static Object getParameter(PmParameterDefinition parameter) {
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Requested parameter: " + getFullName(parameter));
+		}
+		// LOGGING ->
 		if (params.containsKey(parameter)) {
 			return params.get(parameter);
 		} else {
-			return parameter.getDefaultValue();
+			if (defaultParams.containsKey(parameter)) {
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Request default parameter for " + getFullName(parameter) + 
+							"(" + defaultParams.get(parameter) + ")");
+				}
+				// LOGGING ->
+				return getParameter(defaultParams.get(parameter));
+			} else {
+				return parameter.getDefaultValue();
+			}
 		}
 	}
 
 	/**
 	 * @param definition
-	 * @param value Created by Sascha Holzhauer on 29.06.2010
+	 * @param value
 	 */
 	public static void setParameter(PmParameterDefinition definition, Object value) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
-			logger.debug("Set parameter " + definition + "(" + value + ")");
+			logger.debug("Set parameter " + definition + " (" + value + ")");
 		}
 		// LOGGING ->
 
@@ -116,10 +132,26 @@ public class PmParameterManager extends PmAbstractParameterReader {
 
 		if (!definition.getType().isAssignableFrom(value.getClass())) {
 
-			logger.warn("The given value (" + value + ") of type " + value.getClass() + " is not assignable to the "
+			logger.warn(getFullName(definition) + ": The given value (" + value + ") of type " + value.getClass() + " is not assignable to the "
 					+ "type specified in the parameter definition (" + definition.getType() + ")!");
 		}
 		params.put(definition, value);
+	}
+	
+	/**
+	 * Registers another parameter definition that is
+	 * used if there is no value set for the given parameter.
+	 * 
+	 * @param definition
+	 * @param defaultDefinition
+	 */
+	public static void setDefaultParameterDef(PmParameterDefinition definition, PmParameterDefinition defaultDefinition) {
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Set parameter default definition for " + getFullName(definition) + " (" + getFullName(defaultDefinition) + ")");
+		}
+		// LOGGING ->
+		defaultParams.put(definition, defaultDefinition);
 	}
 
 
@@ -131,7 +163,12 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 * @param target
 	 */
 	public static void copyParameterValue(PmParameterDefinition source, PmParameterDefinition target) {
-		setParameter(source, getParameter(target));
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Copy parameter value from " + getFullName(source) + " to " + getFullName(target));
+		}
+		// LOGGING ->
+		setParameter(target, getParameter(source));
 	}
 	
 	/**
@@ -169,7 +206,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
 		for (Entry<PmParameterDefinition, Object> entry : params.entrySet()) {
-			buffer.append("\t" + entry.getKey() + System.getProperty("line.separator") + "\t\t" + entry.getValue());
+			buffer.append("\t" + entry.getKey().getDeclaringClass().getName()+ "." + entry.getKey() + 
+					System.getProperty("line.separator") + "\t\t" + entry.getValue());
 		}
 		valueLogger.info(buffer.toString());
 	}
@@ -191,20 +229,34 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
 		
 		for (PmParameterDefinition parameterDef : paramDefs) {
-			buffer.append("\t" + parameterDef.toString() + System.getProperty("line.separator") + "\t -> " + 
+			buffer.append("\t" + parameterDef.getDeclaringClass().getName() + "." + parameterDef.toString() + 
+					System.getProperty("line.separator") + "\t -> " + 
 					getParameter(parameterDef) + System.getProperty("line.separator"));
 		}
 		valueLogger.info(buffer.toString());
 	}
 	
-	
 	/**
 	 * Set every field to null
 	 */
 	public static void reset() {
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Reset Parma Parameter Manager...");
+		}
+		// LOGGING ->
 		paraManager = null;
 		params = null;
-		definitions = null;
 		initCollections();
+	}
+	
+	/**
+	 * Returns the full parameter definition name containing
+	 * the name of the declaring class.
+	 * @param definition
+	 * @return
+	 */
+	public static String getFullName(PmParameterDefinition definition) {
+		return definition.getDeclaringClass().getName() + "."+ definition.toString();
 	}
 }

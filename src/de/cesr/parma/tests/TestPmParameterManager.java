@@ -26,19 +26,41 @@ public class TestPmParameterManager {
 	@Before
 	public void setUp() throws Exception {
 		PmParameterManager.reset();
-		PmXmlParameterReader xmlReader = new PmXmlParameterReader(new PmParameterDefinition() {
-			@Override
-			public Class<?> getType() {
-				return String.class;
-			}
-			
-			@Override
-			public Object getDefaultValue() {
-				return "./src/de/cesr/parma/tests/res/TestParameter.xml";
-			}
-		});
-		PmParameterManager.registerReader(xmlReader);
 	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void defaultParameterValueTest() {
+		PmParameterManager.init();
+		
+		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
+		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.SPECIAL_NUM_AGENTS));
+		
+		PmParameterManager.setParameter(PaBasicPa.NUM_AGENTS, 20);
+		
+		assertEquals(20, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
+		assertEquals(20, PmParameterManager.getParameter(PaBasicPa.SPECIAL_NUM_AGENTS));		
+	}
+	
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void copyParameterValueTest() {
+		PmParameterManager.init();
+		
+		assertEquals( 0, PmParameterManager.getParameter(PaBasicPa.COPY_NUM_AGENTS));
+		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
+		
+		PmParameterManager.copyParameterValue(PaBasicPa.NUM_AGENTS, PaBasicPa.COPY_NUM_AGENTS);
+		
+		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.COPY_NUM_AGENTS));
+		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));		
+	}
+	
 
 	@Test
 	public void testLogValues() {
@@ -50,11 +72,28 @@ public class TestPmParameterManager {
 	 */
 	@Test
 	public void testReset() {
-		assertEquals("", 10, PmParameterManager.getParameter(BasicPa.NUM_AGENTS));
+		PmXmlParameterReader xmlReader = new PmXmlParameterReader(new PmParameterDefinition() {
+			@Override
+			public Class<?> getType() {
+				return String.class;
+			}
+			
+			@Override
+			public Object getDefaultValue() {
+				return "./src/de/cesr/parma/tests/res/TestParameter.xml";
+			}
+
+			@Override
+			public Class<?> getDeclaringClass() {
+				return this.getClass();
+			}
+		});
+		PmParameterManager.registerReader(xmlReader);
+		assertEquals("", 10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
 		PmParameterManager.init();
-		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.reset();
-		assertEquals("", 10, PmParameterManager.getParameter(BasicPa.NUM_AGENTS));
+		assertEquals("", 10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
 	}
 
 }

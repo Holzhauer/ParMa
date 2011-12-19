@@ -48,24 +48,18 @@ import de.cesr.parma.reader.PmDbXmlParameterReader;
 public class TestDBParameterReader {
 
 	/**
-	 * @throws java.lang.Exception Created by Sascha Holzhauer on 29.06.2010
+	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
 		PmParameterManager.reset();
-		PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID, 1);
-		PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE, "./src/de/cesr/parma/tests/res/DBSettingsMysql3.xml");
-		PmDbXmlParameterReader dbXmlReader = new PmDbXmlParameterReader();
-		PmDbParameterReader dbReader = new PmDbParameterReader();
-		PmParameterManager.registerReader(dbXmlReader);
-		PmParameterManager.registerReader(dbReader);
 	}
 
 	static int	order	= 0;
 	static String	first	= "", second = "", third = "";
 
 	/**
-	 * @throws java.lang.Exception Created by Sascha Holzhauer on 29.06.2010
+	 * @throws java.lang.Exception
 	 */
 	@After
 	public void tearDown() throws Exception {
@@ -76,9 +70,16 @@ public class TestDBParameterReader {
 	 */
 	@Test
 	public final void testInitParameters() {
-		assertTrue("", 10 == ((Integer) PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
+		PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID, 1);
+		PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE, "./src/de/cesr/parma/tests/res/DBSettingsMysql3.xml");
+		PmDbXmlParameterReader dbXmlReader = new PmDbXmlParameterReader();
+		PmDbParameterReader dbReader = new PmDbParameterReader();
+		PmParameterManager.registerReader(dbXmlReader);
+		PmParameterManager.registerReader(dbReader);
+		
+		assertTrue("", 10 == ((Integer) PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.init();
-		assertEquals("", 100, ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 100, ((Integer)PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
 	}
 
 	/**
@@ -86,6 +87,13 @@ public class TestDBParameterReader {
 	 */
 	@Test
 	public final void testRegisterParameterReader() {
+		PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID, 1);
+		PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE, "./src/de/cesr/parma/tests/res/DBSettingsMysql3.xml");
+		PmDbXmlParameterReader dbXmlReader = new PmDbXmlParameterReader();
+		PmDbParameterReader dbReader = new PmDbParameterReader();
+		PmParameterManager.registerReader(dbXmlReader);
+		PmParameterManager.registerReader(dbReader);
+		
 		PmParameterManager.registerReader(new PmAbstractParameterReader() {
 			@Override
 			public void initParameters() {
@@ -111,7 +119,7 @@ public class TestDBParameterReader {
 	}
 
 	/**
-	 * @param reader Created by Sascha Holzhauer on 30.06.2010
+	 * @param reader
 	 */
 	public void orderTest(String reader) {
 		order++;

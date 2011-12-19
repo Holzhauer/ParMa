@@ -22,6 +22,7 @@
 package de.cesr.parma.tests;
 
 import de.cesr.parma.core.PmParameterDefinition;
+import de.cesr.parma.core.PmParameterManager;
 
 
 
@@ -31,12 +32,16 @@ import de.cesr.parma.core.PmParameterDefinition;
  * @date 29.06.2010
  * 
  */
-public enum BasicPa implements PmParameterDefinition {
+public enum PaBasicPa implements PmParameterDefinition {
 
 	/**
 	 * Number of households a single agents represents in simulation
 	 */
 	NUM_AGENTS(Integer.class, 10),
+	
+	SPECIAL_NUM_AGENTS(Integer.class, PaBasicPa.NUM_AGENTS),
+	
+	COPY_NUM_AGENTS(Integer.class, 0),
 	
 	/**
 	 * 
@@ -46,15 +51,21 @@ public enum BasicPa implements PmParameterDefinition {
 	private Class < ? >	type;
 	private Object		defaultValue;
 
-	BasicPa(Class<?> type) {
+	PaBasicPa(Class<?> type) {
 		this(type, null);
 	}
 
-	BasicPa(Class<?> type, Object defaultValue) {
+	PaBasicPa(Class<?> type, Object defaultValue) {
 		this.type = type;
 		this.defaultValue = defaultValue;
 	}
 
+	PaBasicPa(Class<?> type, PmParameterDefinition defaultDefinition) {
+		this.type = type;
+		this.defaultValue = defaultDefinition.getDefaultValue();
+		PmParameterManager.setDefaultParameterDef(this, defaultDefinition);
+	}
+	
 	public Class < ? > getType() {
 		return type;
 	}

@@ -3,9 +3,10 @@
 
 <project default="jar_creation">
 	
-	<property name="dir_sonomode" value="C:/Sascha/Workspace37/MORe/libs" />
+	<property name="dir_sonomode" value="${basedir}/../MORe/libs" />
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
+	<property name="dir_more" value="${base}/../MORe/libs" />
 	
 	<!-- ================================= 
           target: Fetch SVN Revision Number                  	
@@ -21,7 +22,7 @@
 	<target name="jar_creation" depends="svn_infos" description="Creates a jar file from ParMa">
 	
 	<!--delete file="${dir_sonomode}/${jar_name}.jar"/-->
-    <jar destfile="${dir_sonomode}/${jar_name}.jar"
+    <jar destfile="${dir_more}/${jar_name}.jar"
         update="false"
         compress="true"
         duplicate="add">

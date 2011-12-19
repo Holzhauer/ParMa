@@ -129,7 +129,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 				}
 				else {
 					logger.warn("Parameter XML file " + PmParameterManager.getParameter(settingsFile) + " does not contain" +
-							" any parameter definitions");
+							" any parameter defualtParams");
 				}
 			}
 		} catch (ParserConfigurationException e) {

@@ -44,9 +44,9 @@ public class TestXmlParameterReader {
 	 */
 	@Test
 	public final void testInitParameters() {
-		assertEquals("", 10, ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 10, ((Integer)PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.init();
-		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
 	}
 
 }

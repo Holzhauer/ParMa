@@ -2,9 +2,9 @@
 <settings>
 	<db>
 		<SQL_LOCATION>localhost</SQL_LOCATION>
-		<SQL_DBNAME>holzhauer</SQL_DBNAME>
+		<SQL_DBNAME>klimzug</SQL_DBNAME>
 		<SQL_USER>holzhauer</SQL_USER>
 		<SQL_PASSWORD>ymxncbv</SQL_PASSWORD>
-		<SQL_TBLNAME_PARAMS>sonomode_param_paramsets</SQL_TBLNAME_PARAMS>
+		<SQL_TBLNAME_PARAMS>parma_test</SQL_TBLNAME_PARAMS>
 	</db>
 </settings>

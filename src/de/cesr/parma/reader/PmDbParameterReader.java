@@ -73,7 +73,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	protected PmParameterDefinition dbPassword	= PmFrameworkPa.PASSWORD;
 	
 	/**
-	 * @param paramSetId the parameter definition that specifies the parameter set id for which parameter definitions shall be fetched from DB,
+	 * @param paramSetId the parameter definition that specifies the parameter set id for which parameter defualtParams shall be fetched from DB,
 	 */
 	public PmDbParameterReader(PmParameterDefinition paramSetId) {
 		this.paramSetId = paramSetId;
@@ -158,7 +158,8 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 					logger.error(e.getMessage());
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					logger.error(e.getMessage());
+					logger.error("Class " + result.getObject(i) + " not found!" + 
+							" (for parameter " + param_class + ":" + param_name  +")");
 					e.printStackTrace();
 				}
 			}

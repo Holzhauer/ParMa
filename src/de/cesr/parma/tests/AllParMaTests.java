@@ -17,6 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
 TestPmParameterManager.class, TestDBParameterReader.class, TestXmlParameterReader.class
  })
 
-public class AllTests {
+public class AllParMaTests {
 
 }
