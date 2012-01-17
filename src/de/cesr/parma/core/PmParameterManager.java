@@ -106,7 +106,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	public static void setParameter(PmParameterDefinition definition, Object value) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
-			logger.debug("Set parameter " + definition + " (" + value + ")");
+			logger.debug("Set parameter " + getFullName(definition) + " (" + value + ")");
 		}
 		// LOGGING ->
 
@@ -130,7 +130,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 			logger.debug("Value after conversion: " + value);
 		}
 
-		if (!definition.getType().isAssignableFrom(value.getClass())) {
+		if (value != null && !definition.getType().isAssignableFrom(value.getClass())) {
 
 			logger.warn(getFullName(definition) + ": The given value (" + value + ") of type " + value.getClass() + " is not assignable to the "
 					+ "type specified in the parameter definition (" + definition.getType() + ")!");
