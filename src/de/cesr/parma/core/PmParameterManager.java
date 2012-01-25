@@ -100,6 +100,18 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	}
 
 	/**
+	 * Checks whether the given definition has been set by
+	 * {@link PmParameterManager#setParameter(PmParameterDefinition, Object)}.
+	 * 
+	 * @param definiiton
+	 *            the definition to check
+	 * @return true if the parameter has been set
+	 */
+	public static boolean isCustomised(PmParameterDefinition definiiton) {
+		return params.containsKey(definiiton);
+	}
+
+	/**
 	 * @param definition
 	 * @param value
 	 */
