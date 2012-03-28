@@ -3,9 +3,9 @@
 
 <project default="jar_creation">
 	
-	<property name="dir_sonomode" value="${basedir}/../../../SonoMode/lib" />
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
+	<property name="dir_sesam" value="${base}/../LARA_base/lib" />
 	
 	<property name="svn.info.rev" value="Not defined"/>
 	
@@ -22,8 +22,8 @@
 
 	<target name="jar_creation" description="Creates a jar file from ParMa">
 	
-	<!--delete file="${dir_sonomode}/${jar_name}.jar"/-->
-    <jar destfile="${dir_sonomode}/${jar_name}.jar"
+	<!--delete file="${dir_sesam}/${jar_name}.jar"/-->
+    <jar destfile="${dir_sesam}/${jar_name}.jar"
         update="false"
         compress="true"
         duplicate="add">
@@ -35,6 +35,5 @@
             <attribute name="Built-Date" value="${TODAY}"/>
         </manifest>
     </jar>
-	<echo>${dir_sonomode}/${jar_name}.jar</echo>
 </target>
 </project>

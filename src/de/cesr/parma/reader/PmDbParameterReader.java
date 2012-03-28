@@ -63,7 +63,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	static private Logger	logger	= Logger.getLogger(PmDbParameterReader.class);
 
 	private Connection		con;
-	private PmParameterDefinition paramSetId;
+	private final PmParameterDefinition paramSetId;
 
 	
 	protected PmParameterDefinition dbTable 	= PmFrameworkPa.TBLNAME_PARAMS;
@@ -234,8 +234,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	}
 
 	/**
-	 * 
-	 * Created by Sascha Holzhauer on 29.03.2010
+	 *
 	 */
 	protected void disconnect() {
 		try {
