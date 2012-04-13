@@ -72,6 +72,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 		this.settingsFile = PmFrameworkPa.XML_PARAMETER_FILE;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void initParameters() {
 		try {
@@ -114,10 +115,19 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 								definition = (PmParameterDefinition) Enum.valueOf((Class<Enum>) Class
 										.forName(param_class), param_name);
 								
+								logger.debug("Set parameter " + tagName
+										+ " to " + value);
 								
-								
-								logger.debug("Set parameter " + tagName + " to " + value);
-								setParameter(definition, value);
+								if (definition.getType() == Class.class) {
+									// handle Class.class parameter types:
+									if (value.toString().length() > 0) {
+										setParameter(definition,
+												Class.forName(value));
+									}
+								} else {
+									// handle all other parameter types:
+									setParameter(definition, value);
+								}
 								
 							} catch (ClassNotFoundException e1) {
 								logger.error("No such parameter definition in classpath: " + tagName);
