@@ -61,6 +61,12 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 	 * @param settingsFile parameter definition of location of XML file that specifies database settings
 	 */
 	public PmDbXmlParameterReader(PmParameterDefinition settingsFile) {
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Init PmDbXmlParameterReader with " + PmParameterManager.getFullName(settingsFile));
+		}
+		// LOGGING ->
+
 		this.settingsFile = settingsFile;
 	}
 	
@@ -69,6 +75,11 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 	 */
 	public PmDbXmlParameterReader() {
 		this.settingsFile = PmFrameworkPa.DB_SETTINGS_FILE;
+		// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Init PmDbXmlParameterReader with " + PmParameterManager.getFullName(PmFrameworkPa.DB_SETTINGS_FILE));
+				}
+				// LOGGING ->
 	}
 	
 	
