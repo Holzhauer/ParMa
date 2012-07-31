@@ -59,7 +59,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 	PmParameterDefinition settingsFile;
 	
 	/**
-	 * @param settingsFile parameter definition of location of XML file that specifies database settings
+	 * @param settingsFile parameter definition of location of XML file that specifies general settings
 	 */
 	public PmXmlParameterReader(PmParameterDefinition settingsFile) {
 		this.settingsFile = settingsFile;
@@ -77,7 +77,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 	public void initParameters() {
 		try {
 			
-			logger.info("Read Database settings from XML-File " + settingsFile); 
+			logger.info("Read settings from XML-File " + settingsFile); 
 					
 			File file = new File((String) PmParameterManager.getParameter(settingsFile));
 			
@@ -86,14 +86,8 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 			} else {
 			
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				DocumentBuilder db;
-				
-				db = dbf.newDocumentBuilder();
-	
-				Document doc;
-	
-				doc = db.parse(file);
-	
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc = db.parse(file);
 				doc.getDocumentElement().normalize();
 				
 				// get first "parameter" element

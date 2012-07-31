@@ -40,7 +40,7 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 	LOCATION(String.class, "localhost"),
 	
 	/**
-	 * 
+	 * MySQL database name
 	 */
 	DBNAME(String.class, "database"),
 	
@@ -50,12 +50,12 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 	USER(String.class, "user"),
 	
 	/**
-	 * Password
+	 * MySQL Password
 	 */
 	PASSWORD(String.class, "password"),
 
 	/**
-	 * the parameter definition that specifies the parameter set id
+	 * The parameter definition that specifies the parameter set id
 	 * for which parameter defualtParams shall be fetched from DB
 	 */
 	PARAM_SET_ID(Integer.class, 1),
@@ -73,7 +73,7 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 	/**
 	 *  Location of XML file that specifies database settings:
 	 */
-	DB_SETTINGS_FILE(String.class, "./DbSettings.xml");
+	DB_SETTINGS_FILE(String.class, "./config/db/DbSettings.xml");
 	
 
 	private Class < ? >	type;

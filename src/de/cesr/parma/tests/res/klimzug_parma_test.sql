@@ -1,5 +1,5 @@
-CREATE DATABASE  IF NOT EXISTS `klimzug` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `klimzug`;
+CREATE DATABASE  IF NOT EXISTS `holzhauer` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `holzhauer`;
 -- MySQL dump 10.13  Distrib 5.5.9, for Win32 (x86)
 --
 -- Host: localhost    Database: klimzug

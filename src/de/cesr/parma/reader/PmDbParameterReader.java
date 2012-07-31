@@ -22,7 +22,6 @@
 package de.cesr.parma.reader;
 
 
-
 import static de.cesr.parma.core.PmParameterManager.getParameter;
 import static de.cesr.parma.core.PmParameterManager.setParameter;
 
@@ -40,16 +39,18 @@ import de.cesr.parma.core.PmParameterManager;
 import de.cesr.parma.definition.PmFrameworkPa;
 
 
-
-
-
 /**
  * 
  * Parameter retrieval from MySQL databases
  * PARameter MAnager
  * 
+ * Connects to a MySQL database using parameter values of {@link PmFrameworkPa#LOCATION}, {@link PmFrameworkPa#DBNAME},
+ * {@link PmFrameworkPa#USER}, and {@link PmFrameworkPa#PASSWORD} and reads in parameter values from
+ * {@link PmFrameworkPa#TBLNAME_PARAMS} (the row that is defined by parameter set id - see
+ * {@link #PmDbParameterReader(PmParameterDefinition)}). 
  * This reader enables the use of other db settings and tables than defined in PmFrameworkPa
  * via setter methods for theses settings. However, defaults are the values of {@link PmFrameworkPa}.
+ * See documentation for further instructions.
  * 
  * @author Sascha Holzhauer
  * @date 29.06.2010
@@ -73,14 +74,15 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	protected PmParameterDefinition dbPassword	= PmFrameworkPa.PASSWORD;
 	
 	/**
-	 * @param paramSetId the parameter definition that specifies the parameter set id for which parameter defualtParams shall be fetched from DB,
+	 * Uses the given paramete definition as parameter set ID.
+	 * @param paramSetId the parameter definition that specifies the parameter set id for which parameter definitions shall be fetched from DB,
 	 */
 	public PmDbParameterReader(PmParameterDefinition paramSetId) {
 		this.paramSetId = paramSetId;
 	}
 
 	/**
-	 * 
+	 * Uses {@link PmFrameworkPa#PARAM_SET_ID} as parameter set ID.
 	 */
 	public PmDbParameterReader() {
 		this.paramSetId = PmFrameworkPa.PARAM_SET_ID;
@@ -119,7 +121,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 			if (!result.next()) {
 				logger.error("No parameter set in table for paramID "
 						+ PmParameterManager.getParameter(this.paramSetId));
-				throw new IllegalStateException("No parameter set in table for paramID "
+				throw new IllegalStateException("No parameter set in table " + t1 + " for paramID "
 						+ PmParameterManager.getParameter(this.paramSetId));
 			}
 
@@ -149,7 +151,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 								+ " read from" + " database. Value: " + result.getObject(i));
 					} else {
 						if (!result.getMetaData().getColumnName(i).equals("id")) {
-							logger.warn("The column " + result.getMetaData().getColumnName(i) + " of table " +
+							logger.warn("The column '" + result.getMetaData().getColumnName(i) + "' of table " +
 									t1 + " is not in proper parameter format (CLASS:PARAMETER_NAME)");
 						}
 					}
@@ -242,75 +244,5 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * @return the dbTable
-	 */
-	public PmParameterDefinition getDbTable() {
-		return dbTable;
-	}
-
-	/**
-	 * @param dbTable the dbTable to set
-	 */
-	public void setDbTable(PmParameterDefinition dbTable) {
-		this.dbTable = dbTable;
-	}
-
-	/**
-	 * @return the dbLocation
-	 */
-	public PmParameterDefinition getDbLocation() {
-		return dbLocation;
-	}
-
-	/**
-	 * @param dbLocation the dbLocation to set
-	 */
-	public void setDbLocation(PmParameterDefinition dbLocation) {
-		this.dbLocation = dbLocation;
-	}
-
-	/**
-	 * @return the dbName
-	 */
-	public PmParameterDefinition getDbName() {
-		return dbName;
-	}
-
-	/**
-	 * @param dbName the dbName to set
-	 */
-	public void setDbName(PmParameterDefinition dbName) {
-		this.dbName = dbName;
-	}
-
-	/**
-	 * @return the dbUser
-	 */
-	public PmParameterDefinition getDbUser() {
-		return dbUser;
-	}
-
-	/**
-	 * @param dbUser the dbUser to set
-	 */
-	public void setDbUser(PmParameterDefinition dbUser) {
-		this.dbUser = dbUser;
-	}
-
-	/**
-	 * @return the dbPassword
-	 */
-	public PmParameterDefinition getDbPassword() {
-		return dbPassword;
-	}
-
-	/**
-	 * @param dbPassword the dbPassword to set
-	 */
-	public void setDbPassword(PmParameterDefinition dbPassword) {
-		this.dbPassword = dbPassword;
 	}
 }

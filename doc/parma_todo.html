@@ -16,8 +16,15 @@
 	
 	<h2><a name="prio_medium">Priorität: medium</a></h2>
 	<ul>
-		<li>Create ant release build file</li>
-		<li>Create AllJunitTest class</li>
+		<li>Allow for parameter sweep
+			<ul>
+				<li>ParameterManager needs to calculate the total number of sweeps</li>
+				<li>ParameterManager needs initNextSweep() method</li>
+				<li>ParameterReader should ask whether there is just a single value or START/END/STEP values defined for each parameter</li>
+				<li>Define a mechanism to define the hierarchy of parameter switches -> see Repast Simphony</li>
+			</ul>
+		</li>
+		<li>Enable parameter redirection: Replace one parameter definition by another without only copying values.</li>
 	</ul>
 	
 	<h2><a name="prio_low">Priorität: niedrig</a></h2>

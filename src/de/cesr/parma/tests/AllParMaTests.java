@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses( {
-TestPmParameterManager.class, TestDBParameterReader.class, TestXmlParameterReader.class
+TestPmParameterManager.class, TestDBParameterReader.class, TestXmlParameterReader.class, TestPmGuiParameterReader.class
  })
 
 public class AllParMaTests {

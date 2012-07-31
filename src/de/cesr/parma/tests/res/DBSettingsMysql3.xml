@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <settings>
 	<db>
-		<SQL_LOCATION>localhost</SQL_LOCATION>
-		<SQL_DBNAME>klimzug</SQL_DBNAME>
+		<SQL_LOCATION>mysql3</SQL_LOCATION>
+		<SQL_DBNAME>holzhauer</SQL_DBNAME>
 		<SQL_USER>holzhauer</SQL_USER>
 		<SQL_PASSWORD>ymxncbv</SQL_PASSWORD>
 		<SQL_TBLNAME_PARAMS>parma_test</SQL_TBLNAME_PARAMS>
