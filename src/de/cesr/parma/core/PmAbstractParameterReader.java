@@ -49,7 +49,6 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	/**
 	 * @see de.cesr.parma.core.PmParameterReader#initParameters()
 	 */
-	@Override
 	public void initParameters() {
 
 		for (PmParameterReader reader : readers) {
@@ -73,7 +72,6 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	/**
 	 * @see de.cesr.parma.core.PmParameterReader#registerParameterReader(de.cesr.parma.core.PmParameterReader)
 	 */
-	@Override
 	public void registerParameterReader(PmParameterReader reader) {
 		readers.add(reader);
 	}

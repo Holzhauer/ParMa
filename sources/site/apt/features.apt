@@ -1,0 +1,29 @@
+	----------------
+	ParMa
+	----------------
+	Sascha Holzhauer
+	----------------
+	2012-07-31
+	
+	
+Features
+
+	* Parameter Management for ABM
+	
+	* The Parameter Framework allows the definition of several sources of parameters:
+		
+		* Reading parameters from (MySQL-)DB
+	
+		* Reading parameters from XML files
+	
+		* Setting parameters in Java
+	
+	* Definition of parameter in Java Enumerations
+	
+		* The Java code allows the definition of default values that are used in case there is no further definition
+	
+	* Defining other parameters as default
+	
+	* Fine definition of reading order
+	
+	* Checking, if a parameter has been set by calling the <<<isCustomised(PmParameterDefinition definition)>>>

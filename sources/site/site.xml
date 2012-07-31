@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+  name="ParMa">
+  <publishDate position="right"/>
+  <version position="right"/>
+  <bannerLeft>
+     <src>./images/parma-logo.png</src>
+  </bannerLeft>
+  <bannerRight>
+  	 <src>./images/cesr-logo.gif</src>
+  </bannerRight>
+  <body>
+    <links>
+      <item name="Repast Simphony" href="http://repast.sourceforge.net/" />
+    </links>
+
+    <menu name="ParMa">
+      <item name="Introduction" href="index.html"/>
+      <item name="JavaDoc" href="./javadoc/index.html"/>
+      <item name="Features" href="features.html"/>
+      <item name="Usage" href="usage.html"/>
+      
+    </menu>
+    <menu name="Internal">
+      <item name="Implementation" href="implementation.html"/>
+      <item name="ToDo" href="todo.html"/>
+    </menu>
+
+    <menu ref="reports"/>
+
+  </body>
+</project>
+

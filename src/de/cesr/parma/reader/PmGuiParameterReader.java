@@ -159,7 +159,9 @@ class ParameterDialog extends JDialog implements ActionListener {
 		return value.getText();
 	}
 
-	@Override
+	/**
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		setParameterValue();
 		setVisible(false);

@@ -34,8 +34,6 @@ public interface PmParameterReader {
 
 	/**
 	 * (Recursively) init parameters.
-	 * 
-	 * Created by Sascha Holzhauer on 19.05.2011
 	 */
 	public void initParameters();
 
@@ -43,7 +41,6 @@ public interface PmParameterReader {
 	 * Register further PmParameterReader at this reader
 	 * 
 	 * @param reader the reader to register
-	 * Created by Sascha Holzhauer on 19.05.2011
 	 */
 	public void registerParameterReader(PmParameterReader reader);
 

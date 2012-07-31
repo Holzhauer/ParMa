@@ -1,0 +1,215 @@
+	----------------
+	ParMa
+	----------------
+	Sascha Holzhauer
+	----------------
+	2012-07-31
+
+ 
+Usage 
+ 
+ 
+* Using this Documentation
+
+	First, read section {{{Getting ParMa to work}Getting ParMa to work}}. Then, read the hints to the specific parameter readers below.
+	
+	
+* The Concept
+
+	The <<<PmParameterManager>>> is the central unit of the ParameterFramework. <<<PmParameterDefinition>>>s are registered at the 
+	manager.
+	
+	Its <<<init()>>> method is called to read in available parameter
+	data. The way to accomplish that task is defined by <<<PmParameterReader>>>s that are registered at the <<<PmParameterManager>>> and have
+	a <<<initParameters()>>> method that is called from the manager. If no parameter values are read in, the parameter manager steps
+	back to the default value defined in the <<<PmParameterDefinition>>>.
+	
+	
+* {Getting ParMa to work}
+
+** Create parameter definitions
+
+    First, <<<PmParameterDefinition>>>s need to be created. For convenience, these parameter definitions are defined by an enumeration,
+    as the following example shows:
+    
++--
+public enum PmFrameworkPa implements PmParameterDefinition {
+   
+      /**
+       *  Location of XML file that specifies database settings:
+       */
+      DB_SETTINGS_FILE(String.class, "./DbSettings.xml");
+     
+
+      private Class<?>  type;
+      private Object    defaultValue;
+
+      PmFrameworkPa(Class<?> type) {
+        this(type, null);
+      }
+
+      PmFrameworkPa(Class<?> type, Object defaultValue) {
+        this.type = type;
+        this.defaultValue = defaultValue;
+      }
+
+      public Class < ? > getType() {
+        return type;
+      }
+
+      public Object getDefaultValue() {
+        return defaultValue;
+      }
+    }
++--
+    
+
+** Model Initialisation
+
+	Consider the following steps during model initialisation to initialise ParMa properly:
+        
+	[[1]] One or more <<<PmParameterReader>>>s are registered at the parameter manager:
+
++--
+PmParameterManager.registerReader(new PmXmlParameterReader());
++--
+
+	[[1]] Then, trigger the parameter manager to read in parameter values. Parameter readers 
+	are initialised in the order they were registered at the manager. 
+
++--        
+PmParameterManager.init();
++--
+    
+
+** Access Parameter Values
+
+    Finally, You will access the parameter values like this:
+
++--
+int num_total = ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).intValue();
++--
+
+
+* Parameter Readers
+
+** PmDbParameterReader
+
+	The <<<PmDbParameterReader>>> connects to a MySQL database using <<<PmFrameworkPa.LOCATION>>>, <<<PmFrameworkPa.DBNAME>>>,
+	<<<PmFrameworkPa.USER>>>, and <<<PmFrameworkPa.PASSWORD>>> and fetches parameter values from a specific row 
+	(<<<PmFrameworkPa.PARAM_SET_ID>>>) of a certain table (<<<PmFrameworkPa.TBLNAME_PARAMS>>>). There are two ways to set values 
+	for these parameters:
+
+    [[1]]] <<<PmDbXmlParameterReader reads the database settings from an XML-File. The <<<PmDbXmlParameterReader>>> also should 
+    be registered at the <<<PmParameterManager>>> before the <<<PmDbParameterReader>>>.
+    
+    [[1]] Set the parameters via Java code before PmParameterManager.init() is called:
+    
++--
+PmParameterManager.setParameter(PmFrameworkPa.LOCATION, "localhost");
+PmParameterManager.setParameter(PmFrameworkPa.DBNAME, "agentbm");
+PmParameterManager.setParameter(PmFrameworkPa.USER, "modeller");
+PmParameterManager.setParameter(PmFrameworkPa.PASSWORD, "password");
+PmParameterManager.setParameter(PmFrameworkPa.TBLNAME_PARAMS, "params");
++--
+
+	The parameter definition that contains the parameter set id for which parameter definitions shall be fetched from DB may be passed
+	by the constructor. Otherwise, the parameter set id needs to be assigned to <<<PmFramworkPa#PARAM_SET_ID>>>. Use the following 
+	syntax to pass your custom parameter set id parameter to the framework:
+	
++--
+PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID,
+    PmParameterManager.getParameter(BasicPa.PARAM_SET_ID));
++--
+
+	Column names for parameters require the form <package>.<Enumeration>:<PARAMETER_NAME>. Note that you need to specify quotes around 
+	these constructs in SQL. The param set id translates the column named "id" within the table.
+	
+
+** PmXmlParameterReader
+
+	<<<PmXmlParameterReader>>> parses parameter data that is specified in an XML file. As in database tables, parameter names need to be 
+	given in the form <package>.<Enumeration>:<PARAMETER_NAME>. XML parameter files look like this:
+	
++--
+<?xml version="1.0"?>
+<parameters>
+<de.cesr.parma.tests.BasicPa:NUM_AGENTS>100</de.cesr.parma.tests.BasicPa:NUM_AGENTS>
+<de.cesr.parma.tests.BasicPa:MUE>0.1</de.cesr.parma.tests.BasicPa:MUE>
+</parameters>
++--
+
+	The <<<PmXmlParameterReader>>> is useful to provide default parameter values that are not hard-coded (initialise the reader at first)
+	or to override parameter value, e.g. from database in order to test certain settings (initialise the reader at last). 
+	Note that you may invalidate the run information mechanism in the latter case!
+	
+
+** PmDdXmlParameterReader
+
+	The <<<PmDbXmlParameterReader>>> is a special version of <<<PmXmlParameterReader>>> and reads in database settings specified in an 
+	XML-file whose name and location is defined in <<<PmFrameworkPa#DB_SETTINGS_FILE>>>. The <<<PmDbXmlParameterReader>>> is registered
+	at the <<<PmParameterManager>>> by default.
+	
+	
+** PmGuiParameterReader
+
+	The <<<PmGuiParameterReader>>> currently is not ready for use.
+
+
+* Special Applications
+	
+** Use more than one Database source
+
+	In case more than one database sources (also true when more than one tables in the same database shall be accessed) shall be used,
+	one needs to initialise parameters in several steps:
+
++--
+PmParameterManager.setParameter(PmFrameworkPa.XML_PARAMETER_FILE,
+	PmParameterManager.getParameter(BasicPa.XML_PARAMETER_FILE));
+PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE,
+	"./config/DBSettings.xml");
+   
+PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID,
+	PmParameterManager.getParameter(BasicPa.PARAM_SET_ID));
+   
+PmParameterManager.registerReader(new PmDbXmlParameterReader());
+PmParameterManager.registerReader(new PmDbParameterReader(BasicPa.PARAM_SET_ID));
+PmParameterManager.registerReader(new MilieuPrefDataReader());
+   
+PmParameterManager.init();
+   
+PmParameterManager.setParameter(PmFrameworkPa.DB_SETTINGS_FILE,
+	"./config/DBSettingsSocNet.xml");
+   
+new PmDbXmlParameterReader().initParameters();
+new PmDbParameterReader(SocNetPa.SOCNET_PARAM_ID).initParameters();
+   
+new PmXmlParameterReader().initParameters();
++--
+
+	First, XML file locations for a <<<PmXmlParameterReader>>> and <<<PmDbXmlParameterReader>>> are passed from custom parameter definitions
+	(<<<PmFrameworkPa.XML_PARAMETER_FILE>>>) or hard coded <<<PmFrameworkPa.DB_SETTINGS_FILE>>> to the ParMa framework definitions. 
+	
+	Furthermore, the param set id is copied from custom parameter definition. Note, for Repast Simphony batch runs you need to ensure 
+	that the parameter set id from the RS parameter scheme are passed to ParMa before any <<<PmDbParameterReader>>> are initialised! 
+	Afterwards, may not override the RS settings by copying custom definitions!
+	
+	Then, number of readers including the <<<PmDbXmlParameterReader>>> and the first <<<PmDbParameterReader>>> are registered at the 
+	<<<PmParameterManager>>> and are initialised afterwards in the given order.
+
+    Afterwards, another XML file is set as <<<DB_SETTINGS_FILE>>> to read parameters from another table.
+    Then, <<<PmDbXmlParameterReader>>> is initialised directly (thus, there is no need to register readers at <<<PmParameterManager>>>),
+    and the second <<<PmDbParameterReader>>> is initialised directly as well.
+    
+    At last, the <<<PmFrameworkPa.DB_SETTINGS_FILE>>> is initialised with the XML file specified at the beginning in order to possible
+    override certain parameters. 
+
+
+* Known Problems
+
+** Parallel Computing
+
+	For instance, if you want to instantiate in parallel several objects of a class with different parameter values using ParMa this 
+	could cause problems. The various instantiation processes all access the same parameter through ParMa. Therefore, it is hard to 
+	assign various values to the same parameter without causing side effects.
+	

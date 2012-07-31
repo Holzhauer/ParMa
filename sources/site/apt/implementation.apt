@@ -1,0 +1,15 @@
+	----------------
+	ParMa
+	----------------
+	Sascha Holzhauer
+	----------------
+	2012-07-31
+	
+	
+Implementation
+
+
+* Initialisation
+	
+	Initialisation must be triggered by the user. The parameter manager could be initialised automatically upon the first parameter request.
+	However, in some cases the user wants to access default parameters as defined in the enumerations before initialising parameter readers.

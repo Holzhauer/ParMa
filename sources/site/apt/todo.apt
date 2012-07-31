@@ -1,0 +1,21 @@
+	----------------
+	ParMa
+	----------------
+	Sascha Holzhauer
+	----------------
+	2012-07-31
+
+
+TODO
+
+* Priority: medium
+
+	* Allow for parameter sweep
+		
+		* ParameterManager needs to calculate the total number of sweeps
+		
+		* ParameterManager needs initNextSweep() method
+		
+		* ParameterReader should ask whether there is just a single value or START/END/STEP values defined for each parameter
+		
+		* Define a mechanism to define the hierarchy of parameter switches -> see Repast Simphony

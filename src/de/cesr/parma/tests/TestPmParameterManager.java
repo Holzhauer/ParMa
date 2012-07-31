@@ -3,8 +3,7 @@
  */
 package de.cesr.parma.tests;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,17 +72,14 @@ public class TestPmParameterManager {
 	@Test
 	public void testReset() {
 		PmXmlParameterReader xmlReader = new PmXmlParameterReader(new PmParameterDefinition() {
-			@Override
 			public Class<?> getType() {
 				return String.class;
 			}
 			
-			@Override
 			public Object getDefaultValue() {
 				return "./src/de/cesr/parma/tests/res/TestParameter.xml";
 			}
 
-			@Override
 			public Class<?> getDeclaringClass() {
 				return this.getClass();
 			}
