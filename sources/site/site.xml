@@ -19,8 +19,14 @@
       <item name="JavaDoc" href="./javadoc/index.html"/>
       <item name="Features" href="features.html"/>
       <item name="Usage" href="usage.html"/>
-      
     </menu>
+    
+    <menu name="Related Projects">
+      <item name="URaNuS" href="http://uranus4abm.sourceforge.net" target="new"/>
+      <item name="MoRe" href="http://mroe4abm.sourceforge.net" target="new"/>
+      <item name="SesamGIM" href="http://sesamgim.sourceforge.net" target="new"/>
+    </menu>
+    
     <menu name="Internal">
       <item name="Implementation" href="implementation.html"/>
       <item name="ToDo" href="todo.html"/>

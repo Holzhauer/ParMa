@@ -8,7 +8,8 @@
  
 Usage 
  
- 
+%{toc|section=0|fromDepth=2|toDepth=3}
+
 * Using this Documentation
 
 	First, read section {{{Getting ParMa to work}Getting ParMa to work}}. Then, read the hints to the specific parameter readers below.
@@ -62,6 +63,11 @@ public enum PmFrameworkPa implements PmParameterDefinition {
       }
     }
 +--
+
+** Adding parameters
+
+	In order to add a parameter you just need to add an enum value. Also consider to add a respective column in the parameter table in case
+	you use the <<<PmDbParameterReader>>> (see {{{dbReader}here}} for further instructions).
     
 
 ** Model Initialisation
@@ -93,17 +99,39 @@ int num_total = ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).i
 
 * Parameter Readers
 
-** PmDbParameterReader
+** PmDbParameterReader{dbReader}
 
 	The <<<PmDbParameterReader>>> connects to a MySQL database using <<<PmFrameworkPa.LOCATION>>>, <<<PmFrameworkPa.DBNAME>>>,
 	<<<PmFrameworkPa.USER>>>, and <<<PmFrameworkPa.PASSWORD>>> and fetches parameter values from a specific row 
-	(<<<PmFrameworkPa.PARAM_SET_ID>>>) of a certain table (<<<PmFrameworkPa.TBLNAME_PARAMS>>>). There are two ways to set values 
-	for these parameters:
+	(<<<PmFrameworkPa.PARAM_SET_ID>>>) of a certain table (<<<PmFrameworkPa.TBLNAME_PARAMS>>>). In doing so it reads all columns that
+	follow the correct naming pattern ([package].[Classname]:[parameter name]), eg. <<<de.cesr.sonomode.param.BasicPa:NUM_AGENTS>>>.
+	Make sure to assign the correct data type to the column that enables Java to assign the value to the parameter.
+	
+	There are two ways to set values for the database parameters:
 
-    [[1]]] <<<PmDbXmlParameterReader reads the database settings from an XML-File. The <<<PmDbXmlParameterReader>>> also should 
-    be registered at the <<<PmParameterManager>>> before the <<<PmDbParameterReader>>>.
+    	[[1]] <<<PmDbXmlParameterReader>>> reads the database settings from an XML-File. The XML-File may look like this:
+   		
++--
+<?xml version="1.0"?>
+<settings>
+	<db>
+		<SQL_LOCATION>mysql</SQL_LOCATION>
+		<SQL_DBNAME>project</SQL_DBNAME>
+		<SQL_USER>user</SQL_USER>
+		<SQL_PASSWORD>password</SQL_PASSWORD>
+		<SQL_TBLNAME_PARAMS>table_params_main</SQL_TBLNAME_PARAMS>
+	</db>
+</settings>
++--
+
+			The <<<PmDbXmlParameterReader>>> also should be registered at the <<<PmParameterManager>>> before the <<<PmDbParameterReader>>>,
+			whereas <<<SqlPa.DB_SETTINGS_FILE>>> contains the XML-file's location:
+			
++--
+PmParameterManager.registerReader(new PmDbXmlParameterReader(SqlPa.DB_SETTINGS_FILE));
++--
     
-    [[1]] Set the parameters via Java code before PmParameterManager.init() is called:
+    	[[1]] Set the parameters via Java code before PmParameterManager.init() is called:
     
 +--
 PmParameterManager.setParameter(PmFrameworkPa.LOCATION, "localhost");
@@ -113,15 +141,44 @@ PmParameterManager.setParameter(PmFrameworkPa.PASSWORD, "password");
 PmParameterManager.setParameter(PmFrameworkPa.TBLNAME_PARAMS, "params");
 +--
 
-	The parameter definition that contains the parameter set id for which parameter definitions shall be fetched from DB may be passed
-	by the constructor. Otherwise, the parameter set id needs to be assigned to <<<PmFramworkPa#PARAM_SET_ID>>>. Use the following 
-	syntax to pass your custom parameter set id parameter to the framework:
+	There are three ways to set the parameter-set ID:
+	
+		[[1]] The parameter definition that contains the parameter-set ID for which parameter definitions shall be fetched from DB may be passed
+		by the constructor:
+
++--
+PmParameterManager.registerReader(new PmDbParameterReader(BasicPa.PARAM_SET_ID));
++--
+	
+		[[1]] The parameter-set ID needs to be assigned to <<<PmFramworkPa#PARAM_SET_ID>>>. Use the following 
+		syntax to pass your custom parameter set id parameter to the framework:
 	
 +--
 PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID,
     PmParameterManager.getParameter(BasicPa.PARAM_SET_ID));
 +--
 
+		[[1]] The 3rd variant is based on the 2nd and applies to Repast Simphony models, only and is the preferred way to organise batch runs: Create an <<<.xml>>> file 
+		that contains <<<PARAM_SET_ID>>> as parameter that varies from one batch run to another:
+	
++--
+<?xml version="1.0"?>
+<sweep runs="0">
+	<parameter name="PARAM_SET_ID" type="number" start="1" end="10" step="1"/>
+</sweep>
++--
+
+		Then, read the RS parameter <<<PARAM_SET_ID>>> and assign it to the ParMa framework's <<<PARAM_SET_ID>>>:
+	
++--
+if (RunEnvironment.getInstance().getParameters().getSchema()
+		.contains("PARAM_SET_ID")) {
+	PmParameterManager.setParameter(BasicPa.PARAM_SET_ID,
+			((Integer) RunEnvironment.getInstance().getParameters()
+					.getValue("PARAM_SET_ID")).intValue());
+}
++--
+	
 	Column names for parameters require the form <package>.<Enumeration>:<PARAMETER_NAME>. Note that you need to specify quotes around 
 	these constructs in SQL. The param set id translates the column named "id" within the table.
 	
