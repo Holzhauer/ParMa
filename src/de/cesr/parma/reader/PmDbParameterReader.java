@@ -139,7 +139,11 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 								.forName(param_class), param_name);
 						if (definition.getType() == Class.class) {
 							// handle Class.class parameter types:
-							if (result.getObject(i).toString().length() > 0) {
+							if (result.getObject(i).toString().contains(" ")) {
+								logger.warn("The class for parameter "
+										+ definition
+										+ " contains withspaces. Maybe it is some hint.");
+							} else if (result.getObject(i).toString().length() > 0) {
 								setParameter(definition, Class.forName((String) result.getObject(i)));
 							}
 						} else {
