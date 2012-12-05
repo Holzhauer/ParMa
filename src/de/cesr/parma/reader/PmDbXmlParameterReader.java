@@ -93,7 +93,11 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 		File file = new File((String) PmParameterManager.getParameter(settingsFile));
 		
 		if (!file.exists()) {
-			logger.warn("DB Settings XML file (" + PmParameterManager.getParameter(PmFrameworkPa.DB_SETTINGS_FILE) + ") does not exist!");
+			logger.warn("DB Settings XML file ("
+					+ PmParameterManager
+							.getParameter(PmFrameworkPa.DB_SETTINGS_FILE)
+					+ ") does not exist! "
+					+ "This might have impacts on further DB paramer initialisatons (e.g. mixing up parameter ID with wrong DB configuration)!");
 		} else {
 			try {
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

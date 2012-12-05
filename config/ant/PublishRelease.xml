@@ -16,6 +16,10 @@
  	<property name="remote_base_dir" value="/home/project-web/parma/htdocs"/>
  	<property name="remote_host" value="web.sourceforge.net"/>
  	
+ 	<property name="file_source_dir" value="${dest_dir}/${release}/"/>
+ 	<property name="remote_files_dir" value="/home/frs/project/${project}/${release}/"/>
+ 	<property name="remote_host_files" value="frs.sourceforge.net"/>
+ 	
  	<property name="site_source" value="${basedir}/../../target/site/"/>
  		
 	<tstamp/>
@@ -111,6 +115,25 @@
  			  	</scp>
  	</target>
  	
+ 	<target name="copyRelease2sourceforge" depends="queryPassword">
+ 		<!--sshexec host="${remote_host}"
+ 						username="${user}"
+ 						password="${passphrase}"
+ 					  	trust="true"
+ 						command="date"/-->
+ 				<echo>Transfering data from ${file_source_dir} to ${remote_files_dir}...</echo>
+ 		
+ 			 	<scp
+ 			       todir="${user}@${remote_host_files}:${remote_files_dir}" 
+ 			       password="${passphrase}"
+ 			 	   trust="true"
+ 			 		sftp="true" >
+ 			 		<fileset id="myfilesetFiles" dir="${file_source_dir}">
+ 			 		       		<include name="**/*"/>
+ 			 		</fileset>
+ 			  	</scp>
+ 	</target>
+ 		
 	<target name="clean">
 		<delete dir="${docs.dir}"/>
 	</target>
