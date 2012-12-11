@@ -6,18 +6,22 @@
 	 -->
  	
  	<property name="dest_dir" location="//Usf/home/holzhauer/Generell/Releases/ParMa/" />
- 	<property name="release" value="0.8" />
+ 	<property name="release" value="0.85" />
  	<property name="src_java_dir" location="../../" />
  	<property name="src_doc_dir" location="../../doc" />
  	<property name="project" value="ParMa" />
+ 	<property name="project_unix" value="parma" />
+ 	<property name="project_git" value="${basedir}/../../../../git/parma/SF_parma" />
+ 	 	
+ 	
  	
  	
  	<property name="user" value="s-holzhauer"/>
  	<property name="remote_base_dir" value="/home/project-web/parma/htdocs"/>
  	<property name="remote_host" value="web.sourceforge.net"/>
  	
- 	<property name="file_source_dir" value="${dest_dir}/${release}/"/>
- 	<property name="remote_files_dir" value="/home/frs/project/${project}/${release}/"/>
+ 	<property name="file_source_dir" value="${dest_dir}/"/>
+ 	<property name="remote_files_dir" value="/home/frs/project/${project_unix}/"/>
  	<property name="remote_host_files" value="frs.sourceforge.net"/>
  	
  	<property name="site_source" value="${basedir}/../../target/site/"/>
@@ -115,23 +119,32 @@
  			  	</scp>
  	</target>
  	
+ 	<target name="copySourcesToGit">
+ 		<copy verbose="true" todir="${project_git}">
+ 		    <fileset dir="${project.dir}" includes="**/*.*" id="set1"/>
+ 		 </copy>
+ 	</target>
+ 	
  	<target name="copyRelease2sourceforge" depends="queryPassword">
- 		<!--sshexec host="${remote_host}"
+ 		
+ 		<!--echo>Create dir ${remote_files_dir}...</echo-->
+ 		<!--sshexec host="${remote_host_files}"
  						username="${user}"
  						password="${passphrase}"
  					  	trust="true"
- 						command="date"/-->
- 				<echo>Transfering data from ${file_source_dir} to ${remote_files_dir}...</echo>
+ 						command="mkdir ${remote_files_dir}"/-->
  		
- 			 	<scp
- 			       todir="${user}@${remote_host_files}:${remote_files_dir}" 
- 			       password="${passphrase}"
- 			 	   trust="true"
- 			 		sftp="true" >
- 			 		<fileset id="myfilesetFiles" dir="${file_source_dir}">
- 			 		       		<include name="**/*"/>
- 			 		</fileset>
- 			  	</scp>
+		<echo>Transfering data from ${file_source_dir} to ${remote_files_dir}...</echo>
+
+	 	<scp
+	       todir="${user},${project_unix}@${remote_host_files}:${remote_files_dir}" 
+	       password="${passphrase}"
+	 	   trust="true"
+	 		sftp="true" >
+	 		<fileset id="myfilesetFiles" dir="${file_source_dir}">
+	 		       		<include name="${release}/*"/>
+	 		</fileset>
+	  	</scp>
  	</target>
  		
 	<target name="clean">

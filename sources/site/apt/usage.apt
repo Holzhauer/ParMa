@@ -67,7 +67,7 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 ** Adding parameters
 
 	In order to add a parameter you just need to add an enum value. Also consider to add a respective column in the parameter table in case
-	you use the <<<PmDbParameterReader>>> (see {{{dbReader}here}} for further instructions).
+	you use the <<<PmDbParameterReader>>> (see {{{PmDbParameterReader}here}} for further instructions).
     
 
 ** Model Initialisation
@@ -99,7 +99,7 @@ int num_total = ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).i
 
 * Parameter Readers
 
-** PmDbParameterReader{dbReader}
+** PmDbParameterReader
 
 	The <<<PmDbParameterReader>>> connects to a MySQL database using <<<PmFrameworkPa.LOCATION>>>, <<<PmFrameworkPa.DBNAME>>>,
 	<<<PmFrameworkPa.USER>>>, and <<<PmFrameworkPa.PASSWORD>>> and fetches parameter values from a specific row 
@@ -158,8 +158,8 @@ PmParameterManager.setParameter(PmFrameworkPa.PARAM_SET_ID,
     PmParameterManager.getParameter(BasicPa.PARAM_SET_ID));
 +--
 
-		[[1]] The 3rd variant is based on the 2nd and applies to Repast Simphony models, only and is the preferred way to organise batch runs: Create an <<<.xml>>> file 
-		that contains <<<PARAM_SET_ID>>> as parameter that varies from one batch run to another:
+		[[1]] The 3rd variant is based on the 2nd and applies to Repast Simphony models only, and is the preferred way to organise batch runs: Create an <<<.xml>>> file 
+		that contains <<<PARAM_SET_ID>>> as parameter that varies from one batch run to another (all other parameters are defined within the ParMa framework):
 	
 +--
 <?xml version="1.0"?>
@@ -180,7 +180,7 @@ if (RunEnvironment.getInstance().getParameters().getSchema()
 +--
 	
 	Column names for parameters require the form <package>.<Enumeration>:<PARAMETER_NAME>. Note that you need to specify quotes around 
-	these constructs in SQL. The param set id translates the column named "id" within the table.
+	these constructs in SQL. The param set id refers to the column named "id" within the table.
 	
 
 ** PmXmlParameterReader

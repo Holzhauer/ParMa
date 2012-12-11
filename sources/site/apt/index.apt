@@ -8,7 +8,7 @@
 	
 Purpose
 
-	ParMa provides several ways to define and read parameter settings for ABM ant therefore
+	ParMa provides several ways to define and read parameter settings for ABM and therefore
 	facilitates the organisation of model parameter	settings.
 	
 	
@@ -30,7 +30,7 @@ A Note on Parameter Management
 
 	Of course, there are tools to support such an approach:
 	
-	* This ParameterManager support reading parameter sets from a database using a specific parameter set id.
+	* This ParameterManager supports reading parameter sets from a database using a specific parameter set id.
 		
 	* The RsDbOutputter enables outputting results to a database and optionally automatically creates rows in
 	a table that map runIDs to parameter set IDs (run information table).
