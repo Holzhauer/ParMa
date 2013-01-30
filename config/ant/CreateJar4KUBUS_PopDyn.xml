@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- create a jar archive and puts it into the Sonomode's lib folder -->
+
+<project default="jar_creation">
+	
+	<property name="jar_name" value="ParMa" />
+	<property name="base" value="${basedir}/../.." />
+	<property name="dir_kubus" value="${base}/../KUBUS_PopDyn/lib" />
+	
+	<property name="svn.info.rev" value="Not defined"/>
+	
+	<!-- ================================= 
+          target: Fetch SVN Revision Number                  	
+         ================================= -->
+    <target name="svn_infos" description="description">
+    	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpath="" />
+    	<svn javahl="false" username="holzhauer" password="holzhauer">
+    		<info target="${base}"/>
+    	</svn>
+    	<echo>"Last Revision: ${svn.info.rev}"</echo>
+    </target>
+
+	<target name="jar_creation" description="Creates a jar file from ParMa">
+	
+	<!--delete file="${dir_kubus}/${jar_name}.jar"/-->
+    <jar destfile="${dir_kubus}/${jar_name}.jar"
+        update="false"
+        compress="true"
+        duplicate="add">
+    	<fileset dir="${base}/bin"/>
+    	<fileset dir="${base}/src"/>
+    	<manifest>
+            <attribute name="Built-By" value="Sascha Holzhauer, CESR"/>
+            <attribute name="Implementation-Version"  value="${svn.info.rev}"/>
+            <attribute name="Built-Date" value="${TODAY}"/>
+        </manifest>
+    </jar>
+</target>
+</project>

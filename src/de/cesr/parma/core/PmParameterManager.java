@@ -82,6 +82,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 			logger.debug("Requested parameter: " + getFullName(parameter));
 		}
 		// LOGGING ->
+
 		if (params.containsKey(parameter)) {
 			return params.get(parameter);
 		} else {
@@ -89,11 +90,21 @@ public class PmParameterManager extends PmAbstractParameterReader {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
 					logger.debug("Request default parameter for " + getFullName(parameter) + 
-							"(" + defaultParams.get(parameter) + ")");
+ " ("
+							+ defaultParams.get(parameter) + ")");
 				}
 				// LOGGING ->
+
 				return getParameter(defaultParams.get(parameter));
 			} else {
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Request default value for "
+							+ getFullName(parameter) + " ("
+							+ parameter.getDefaultValue() + ")");
+				}
+				// LOGGING ->
+
 				return parameter.getDefaultValue();
 			}
 		}
