@@ -213,6 +213,19 @@ if (RunEnvironment.getInstance().getParameters().getSchema()
 	The <<<PmGuiParameterReader>>> currently is not ready for use.
 
 
+** Copying parameter values
+
+	It is easy to copy a value from one parameter to another:
+	
++--
+PmParameterManager.copyParameterValue(PmFrameworkPa.DBNAME, MSqlPa.DBNAME);
++--
+
+	This is especially useful to copy a parameter defined in the user model to one or more libraries. Note: It is
+	important to do the copy invocation after any assignment to the parameter that is copied. Otherwise, the new value of
+	the source parameter does not effect the target parameter of the copying process! 
+
+
 * Special Applications
 	
 ** Use more than one Database source

@@ -217,6 +217,18 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		paraManager.registerParameterReader(reader);
 	}
 
+	/**
+	 * Register a parameter reader.
+	 * 
+	 * @param reader
+	 *            the reader to register
+	 */
+	public static void deregisterReader(PmParameterReader reader) {
+		if (paraManager == null) {
+			paraManager = new PmParameterManager();
+		}
+		paraManager.deregisterParameterReader(reader);
+	}
 	
 	/**
 	 * Logs the current parameter values for parameters that were read into this
@@ -231,7 +243,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
 		for (Entry<PmParameterDefinition, Object> entry : params.entrySet()) {
 			buffer.append("\t" + entry.getKey().getDeclaringClass().getName()+ "." + entry.getKey() + 
-					System.getProperty("line.separator") + "\t\t" + entry.getValue());
+ System.getProperty("line.separator") + "\t\t"
+					+ entry.getValue() + System.getProperty("line.separator"));
 		}
 		valueLogger.info(buffer.toString());
 	}
