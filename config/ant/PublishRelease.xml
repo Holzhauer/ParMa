@@ -44,7 +44,7 @@
     		
  	<target name="makeJar" depends="svn_infos">
  	   <mkdir dir="${dest_dir}/${release}/"/>	
- 	   <jar destfile="${dest_dir}/${release}/${project}_${release}.jar"
+ 	   <jar destfile="${dest_dir}/${release}/${project}_bin-and-src_${release}.jar"
  	        update="false"
  	        compress="true"
  	        duplicate="add">
@@ -125,7 +125,7 @@
  		 </copy>
  	</target>
  	
- 	<target name="copyRelease2sourceforge" depends="queryPassword">
+ 	<target name="copyRelease2sourceforge" depends="queryPassword, makeJar">
  		
  		<!--echo>Create dir ${remote_files_dir}...</echo-->
  		<!--sshexec host="${remote_host_files}"
