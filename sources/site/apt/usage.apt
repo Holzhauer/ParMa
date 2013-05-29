@@ -179,8 +179,16 @@ if (RunEnvironment.getInstance().getParameters().getSchema()
 }
 +--
 	
-	Column names for parameters require the form <package>.<Enumeration>:<PARAMETER_NAME>. Note that you need to specify quotes around 
-	these constructs in SQL. The param set id refers to the column named "id" within the table.
+	Column names for parameters require the form <package>.<Enumeration>:<PARAMETER_NAME> (only exceptions are 'id' and 'description' - 
+	all others raise a warning). Note that you need to specify quotes around these constructs in SQL. The param set id refers to 
+	the column named "id" within the table.
+	
+	Sometimes it is necessary to by-pass parameter reading from database, e.g. when a database is not available but the reader is
+	configured in the source code. By-passing is enabled by setting <<<<SQL_TBLNAME_PARAMS>>> to "NOT DEFINED":
+
++--
+<SQL_TBLNAME_PARAMS>NOT DEFINED</SQL_TBLNAME_PARAMS>
++--
 	
 
 ** PmXmlParameterReader

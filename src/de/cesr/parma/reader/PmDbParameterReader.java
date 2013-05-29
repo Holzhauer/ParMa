@@ -63,6 +63,8 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	 */
 	static private Logger	logger	= Logger.getLogger(PmDbParameterReader.class);
 
+	static final String NOT_DEFINED = "NOT DEFINED";
+
 	private Connection		con;
 	private final PmParameterDefinition paramSetId;
 
@@ -108,71 +110,101 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 		}
 		
 		String t1 = (String) getParameter(dbTable);
-
-		String sql = "SELECT * FROM `" + t1 + "` AS t1 WHERE t1.id = " + getParameter(this.paramSetId) + ";";
-		logger.debug("SQL-statement to fetch params: " + sql);
-
 		
-		ResultSet result = connect(sql);
-		try {
-			String param_class = "";
-			String param_name = "";
+		if (t1.equals(NOT_DEFINED)) {
+			// <- LOGGING
+			logger.warn("Table is set to " + NOT_DEFINED
+					+ ". Skipping reading parameters from database.");
+			// LOGGING ->
+		} else {
 
-			if (!result.next()) {
-				logger.error("No parameter set in table for paramID "
-						+ PmParameterManager.getParameter(this.paramSetId));
-				throw new IllegalStateException("No parameter set in table " + t1 + " for paramID "
-						+ PmParameterManager.getParameter(this.paramSetId));
-			}
+			String sql = "SELECT * FROM `" + t1 + "` AS t1 WHERE t1.id = "
+					+ getParameter(this.paramSetId) + ";";
+			logger.debug("SQL-statement to fetch params: " + sql);
 
-			for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
-				try {
-					if (logger.isDebugEnabled()) {
-						logger.debug("metaData for " + i + ": " + result.getMetaData().getColumnName(i));
-					}
-					if (result.getMetaData().getColumnName(i).contains(":")) {
-						// !!! difficulty! >
-						param_class = result.getMetaData().getColumnName(i).split(":")[0];
-						param_name = result.getMetaData().getColumnName(i).split(":")[1];
+			ResultSet result = connect(sql);
+			try {
+				String param_class = "";
+				String param_name = "";
 
-						PmParameterDefinition definition = (PmParameterDefinition) Enum.valueOf((Class<Enum>) Class
-								.forName(param_class), param_name);
-						if (definition.getType() == Class.class) {
-							// handle Class.class parameter types:
-							if (result.getObject(i).toString().contains(" ")) {
-								logger.warn("The class for parameter "
-										+ definition
-										+ " contains withspaces. Maybe it is some hint.");
-							} else if (result.getObject(i).toString().length() > 0) {
-								setParameter(definition, Class.forName((String) result.getObject(i)));
-							}
-						} else {
-							// handle all other parameter types:
-							setParameter(definition, result.getObject(i));
-						}
-
-						logger.info("Parameter " + Enum.valueOf((Class<Enum>) Class.forName(param_class), param_name)
-								+ " read from" + " database. Value: " + result.getObject(i));
-					} else {
-						if (!result.getMetaData().getColumnName(i).equals("id")) {
-							logger.warn("The column '" + result.getMetaData().getColumnName(i) + "' of table " +
-									t1 + " is not in proper parameter format (CLASS:PARAMETER_NAME)");
-						}
-					}
-
-				} catch (IllegalArgumentException e) {
-					logger.error(e.getMessage());
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					logger.error("Class " + result.getObject(i) + " not found!" + 
-							" (for parameter " + param_class + ":" + param_name  +")");
-					e.printStackTrace();
+				if (!result.next()) {
+					logger.error("No parameter set in table for paramID "
+							+ PmParameterManager.getParameter(this.paramSetId));
+					throw new IllegalStateException(
+							"No parameter set in table "
+									+ t1
+									+ " for paramID "
+									+ PmParameterManager
+											.getParameter(this.paramSetId));
 				}
+
+				for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
+					try {
+						if (logger.isDebugEnabled()) {
+							logger.debug("metaData for " + i + ": "
+									+ result.getMetaData().getColumnName(i));
+						}
+						if (result.getMetaData().getColumnName(i).contains(":")) {
+							// !!! difficulty! >
+							param_class = result.getMetaData().getColumnName(i)
+									.split(":")[0];
+							param_name = result.getMetaData().getColumnName(i)
+									.split(":")[1];
+
+							PmParameterDefinition definition = (PmParameterDefinition) Enum
+									.valueOf((Class<Enum>) Class
+											.forName(param_class), param_name);
+							if (definition.getType() == Class.class) {
+								// handle Class.class parameter types:
+								if (result.getObject(i).toString()
+										.contains(" ")) {
+									logger.warn("The class for parameter "
+											+ definition
+											+ " contains withspaces. Maybe it is some hint.");
+								} else if (result.getObject(i).toString()
+										.length() > 0) {
+									setParameter(definition,
+											Class.forName((String) result
+													.getObject(i)));
+								}
+							} else {
+								// handle all other parameter types:
+								setParameter(definition, result.getObject(i));
+							}
+
+							logger.info("Parameter "
+									+ Enum.valueOf((Class<Enum>) Class
+											.forName(param_class), param_name)
+									+ " read from" + " database. Value: "
+									+ result.getObject(i));
+						} else {
+							if (!result.getMetaData().getColumnName(i)
+									.equals("id")
+									&& !result.getMetaData().getColumnName(i)
+											.equals("description")) {
+								logger.warn("The column '"
+										+ result.getMetaData().getColumnName(i)
+										+ "' of table "
+										+ t1
+										+ " is not in proper parameter format (CLASS:PARAMETER_NAME)");
+							}
+						}
+
+					} catch (IllegalArgumentException e) {
+						logger.error(e.getMessage());
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						logger.error("Class " + result.getObject(i)
+								+ " not found!" + " (for parameter "
+								+ param_class + ":" + param_name + ")");
+						e.printStackTrace();
+					}
+				}
+				result.close();
+				disconnect();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			result.close();
-			disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 
