@@ -6,7 +6,7 @@
 	 -->
  	
  	<property name="dest_dir" location="//Usf/home/holzhauer/Generell/Releases/ParMa/" />
- 	<property name="release" value="0.85" />
+ 	
  	<property name="src_java_dir" location="../../" />
  	<property name="src_doc_dir" location="../../doc" />
  	<property name="project" value="ParMa" />
