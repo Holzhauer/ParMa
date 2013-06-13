@@ -13,7 +13,7 @@
  	<property name="project_unix" value="parma" />
  	<property name="project_git" value="${basedir}/../../../../git/parma/SF_parma" />
  	 	
- 	
+ 	<property file="../../project.properties"/>
  	
  	
  	<property name="user" value="s-holzhauer"/>
@@ -31,7 +31,17 @@
 	<property name="project.dir" location="${basedir}/../../" />
 	<property name="image.type" value="svg" />
  	
- 	
+	<input
+    	message="Set version correctly in project.properties and pom.xml? (y/n)?"
+    	validargs="y,n"
+		defaultvalue="y"
+    	addproperty="do.delete"
+	/>
+	<condition property="do.abort">
+	<equals arg1="n" arg2="${do.delete}"/>
+	</condition>
+	<fail if="do.abort">Build aborted by user.</fail>
+		
  	<target name="publish" depends="copyDoc, makeJar"></target>
 
     <target name="svn_infos" description="Fetch SVN infos">
@@ -41,7 +51,14 @@
     	</svn>
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     </target>
-    		
+    
+ 	<target name="make_website" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+ 		<echo>"Create website..."</echo>
+ 		  <artifact:mvn pom="${baseDir}/pom.xml" mavenHome="C:/Users/holzhauer/Programme/apache-maven-3.0.4" fork="true">
+ 		    <arg value="site:site"/>
+ 		  </artifact:mvn>
+ 	</target>
+ 		    	
  	<target name="makeJar" depends="svn_infos">
  	   <mkdir dir="${dest_dir}/${release}/"/>	
  	   <jar destfile="${dest_dir}/${release}/${project}_bin-and-src_${release}.jar"
@@ -52,7 +69,7 @@
  	    	<fileset dir="${src_java_dir}/src"/>
  	    	<manifest>
  	            <attribute name="Built-By" value="Sascha Holzhauer, CESR"/>
- 	            <attribute name="Implementation-Version"  value="${svn.info.rev}"/>
+ 	    		<attribute name="Implementation-Version"  value="${release} (revision ${svn.info.rev})"/>
  	            <attribute name="Built-Date" value="${TODAY}"/>
  	        </manifest>
  	    </jar>
@@ -171,7 +188,7 @@
 		  </apply>
 	</target>
 	
-	<target name="Make_SVG" depends="javadoc_classes" description="Generates SVG from DOT and deletes DOT">
+	<target name="Make_SVG" depends="make_website, javadoc_classes" description="Generates SVG from DOT and deletes DOT">
 		<echo>"Making SVG..."</echo>
 		 <apply executable="dot" dest="${docs.dir}" parallel="false">
 				    <arg value="-T${image.type}"/>

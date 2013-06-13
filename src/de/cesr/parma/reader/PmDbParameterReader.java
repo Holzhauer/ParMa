@@ -63,7 +63,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	 */
 	static private Logger	logger	= Logger.getLogger(PmDbParameterReader.class);
 
-	static final String NOT_DEFINED = "NOT DEFINED";
+	public static final String NOT_DEFINED = "NOT DEFINED";
 
 	private Connection		con;
 	private final PmParameterDefinition paramSetId;
@@ -74,10 +74,13 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	protected PmParameterDefinition dbName		= PmFrameworkPa.DBNAME	;
 	protected PmParameterDefinition dbUser		= PmFrameworkPa.USER;
 	protected PmParameterDefinition dbPassword	= PmFrameworkPa.PASSWORD;
-	
+
 	/**
-	 * Uses the given paramete definition as parameter set ID.
-	 * @param paramSetId the parameter definition that specifies the parameter set id for which parameter definitions shall be fetched from DB,
+	 * Uses the given parameter definition as parameter set ID.
+	 * 
+	 * @param paramSetId
+	 *            the parameter definition that specifies the parameter set id
+	 *            for which parameter definitions shall be fetched from DB,
 	 */
 	public PmDbParameterReader(PmParameterDefinition paramSetId) {
 		this.paramSetId = paramSetId;

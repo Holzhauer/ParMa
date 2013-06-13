@@ -8,6 +8,14 @@
 	<property name="base" value="${basedir}/../.." />
 	<property name="dir_more" value="${base}/../MORe/libs" />
 	
+	<property name="svn.info.rev" value="Not defined"/>
+	
+	<property file="../../project.properties"/>
+	
+	<tstamp>
+	    <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" locale="ENGLISH, GERMANY"/>
+	 </tstamp>
+	
 	<!-- ================================= 
           target: Fetch SVN Revision Number                  	
          ================================= -->
@@ -21,7 +29,6 @@
 
 	<target name="jar_creation" depends="svn_infos" description="Creates a jar file from ParMa">
 	
-	<!--delete file="${dir_sonomode}/${jar_name}.jar"/-->
     <jar destfile="${dir_more}/${jar_name}.jar"
         update="false"
         compress="true"
@@ -30,9 +37,10 @@
     	<fileset dir="${base}/src"/>
     	<manifest>
             <attribute name="Built-By" value="Sascha Holzhauer, CESR"/>
-            <attribute name="Implementation-Version"  value="${svn.info.rev}"/>
+    		<attribute name="Implementation-Version"  value="${release} (revision ${svn.info.rev})"/>
             <attribute name="Built-Date" value="${TODAY}"/>
         </manifest>
     </jar>
+	<echo>${dir_more}/${jar_name}.jar</echo>
 </target>
 </project>

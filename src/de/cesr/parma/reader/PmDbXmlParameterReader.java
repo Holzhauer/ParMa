@@ -97,7 +97,8 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 					+ PmParameterManager
 							.getParameter(PmFrameworkPa.DB_SETTINGS_FILE)
 					+ ") does not exist! "
-					+ "This might have impacts on further DB paramer initialisatons (e.g. mixing up parameter ID with wrong DB configuration)!");
+					+ "This might have impacts on further DB parameter initialisatons (e.g. mixing up parameter ID "
+					+ "with wrong DB configuration)!");
 		} else {
 			try {
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
