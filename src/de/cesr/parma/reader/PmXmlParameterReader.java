@@ -98,8 +98,19 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 						if (parameterDefinitions.item(i).getNodeType() == Node.ELEMENT_NODE) {
 							Element e = (Element) parameterDefinitions.item(i);
 							String tagName = e.getTagName();
-							String param_class = tagName.split(":")[0];
-							String param_name = tagName.split(":")[1];
+							String param_class, param_name;
+							try {
+								param_class = tagName.split(":")[0];
+								param_name = tagName.split(":")[1];
+							} catch (ArrayIndexOutOfBoundsException exception) {
+								// <- LOGGING
+								logger.error("You probabliy have an error in your parameter XML file:"
+										+ "Please, stick to the form <PACKAGE.CLASS:PARAMETER>VALUE</PACKAGE.CLASS:PARAMETER>");
+								// LOGGING ->
+								throw new RuntimeException(
+										"You probabliy have an error in your parameter XML file:"
+												+ "Please, stick to the form <PACKAGE.CLASS:PARAMETER>VALUE</PACKAGE.CLASS:PARAMETER>");
+							}
 							
 							String value = e.getFirstChild().getNodeValue();
 							

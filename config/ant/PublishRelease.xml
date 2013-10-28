@@ -5,16 +5,16 @@
 		
 	 -->
  	
+ 	<property file="../../project.properties"/>
+ 	
  	<property name="dest_dir" location="//Usf/home/holzhauer/Generell/Releases/ParMa/" />
  	
  	<property name="src_java_dir" location="../../" />
  	<property name="src_doc_dir" location="../../doc" />
+ 	
  	<property name="project" value="ParMa" />
  	<property name="project_unix" value="parma" />
  	<property name="project_git" value="${basedir}/../../../../git/parma/SF_parma" />
- 	 	
- 	<property file="../../project.properties"/>
- 	
  	
  	<property name="user" value="s-holzhauer"/>
  	<property name="remote_base_dir" value="/home/project-web/parma/htdocs"/>
@@ -27,7 +27,7 @@
  	<property name="site_source" value="${basedir}/../../target/site/"/>
  		
 	<tstamp/>
-	<property name="docs.dir" location="${basedir}/../../doc/javadoc" />
+	<property name="javadocs.dir" location="${basedir}/../../target/site/javadoc" />
 	<property name="project.dir" location="${basedir}/../../" />
 	<property name="image.type" value="svg" />
  	
@@ -42,7 +42,7 @@
 	</condition>
 	<fail if="do.abort">Build aborted by user.</fail>
 		
- 	<target name="publish" depends="copyDoc, makeJar"></target>
+ 	<target name="publish" depends="copySite2sourceforge, copyRelease2sourceforge"></target>
 
     <target name="svn_infos" description="Fetch SVN infos">
     	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpath="" />
@@ -53,8 +53,13 @@
     </target>
     
  	<target name="make_website" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+ 		<delete>
+			<fileset dir="${site_source}">
+			</fileset>
+		</delete>
+
  		<echo>"Create website..."</echo>
- 		  <artifact:mvn pom="${baseDir}/pom.xml" mavenHome="C:/Users/holzhauer/Programme/apache-maven-3.0.4" fork="true">
+ 		  <artifact:mvn pom="${basedir}/../../pom.xml" mavenHome="C:/Users/holzhauer/Programme/apache-maven-3.0.4" fork="true">
  		    <arg value="site:site"/>
  		  </artifact:mvn>
  	</target>
@@ -75,23 +80,30 @@
  	    </jar>
  	</target>
 
- 	<target name="copyDoc" depends="Make_SVG">
+ 	<target name="copyDoc" depends="Make_SVG" description="Copy docs to release dir on M">
  		<copy todir="${dest_dir}/${release}/doc">
  		    <fileset dir="${src_doc_dir}" includes="**/*.*"/>
- 		  </copy>
+ 		 </copy>
  	</target>
  	
 	<target name="javadoc_classes" depends="clean" description="generates javadoc and also UML Diagrams, and deletes Map-Files">
-		<echo>"${docs.dir}"</echo>
-		<mkdir dir="${docs.dir}"/>
+		<echo>"Create javadoc at ${javadocs.dir}"</echo>
+		<mkdir dir="${javadocs.dir}"/>
 		<!-- narrrowing the packagenames more than "de.cesr.lara.components.*" causes invalid links in the map (maybe a link-provision problem...	-->
-	        <javadoc sourcepath="${project.dir}/src" packagenames="de.cesr.parma.*" destdir="${docs.dir}" classpath="${project.dir}/lib/junit-4.4.jar;${project.dir}/lib/log4j-1.2.8.jar;${project.dir}/lib/collections-generic-4.01.jar;${project.dir}/lib/commons-collections-3.2.jar;">
+	        <javadoc sourcepath="${project.dir}/src" packagenames="de.cesr.parma.*" destdir="${javadocs.dir}" classpath="${project.dir}/lib/junit-4.4.jar;
+	        			${project.dir}/lib/log4j-1.2.13.jar;
+	        			${project.dir}/lib/collections-generic-4.01.jar;
+	        			${project.dir}/lib/commons-collections-3.2.jar;
+	        			${project.dir}/lib_tools/junit.jar">
 	        	<link href="http://projects.hepforge.org/jhepwork/api_extra/"/>
 	        	<link href="http://jung.sourceforge.net/doc/api/"/>
 	        	<link href="http://java.sun.com/javase/6/docs/api/"/>
-	        	<link href="http://logging.apache.org/log4j/1.2/apidocs/index.html"/>
+	        	<link href="http://logging.apache.org/log4j/1.2/apidocs/"/>
 	        	<link href="http://collections.sourceforge.net/api/"/>
-	        	<link href="http://commons.apache.org/collections/"/>
+	        	<link href="http://commons.apache.org/proper/commons-collections/apidocs/"/>
+	        	
+	        	<tag name="date" scope="all" description="Date:"/>
+	        	
 	        	<doclet name="de.cesr.tools.umlgraph.UmlGraphDoc"
 	        	   	path="${project.dir}/lib_tools/UmlGraphSvg.jar">
 	        	   		<param name="-enumerations" />
@@ -103,7 +115,7 @@
 	        	    </doclet>
 	      </javadoc>
 	<delete>
-		<fileset dir="${docs.dir}" includes="**/*.map"/>
+		<fileset dir="${javadocs.dir}" includes="**/*.map"/>
 	</delete>
 		 
 	</target>
@@ -117,7 +129,7 @@
  	</target>
 			
 	
- 	<target name="copySite2sourceforge" depends="queryPassword">
+ 	<target name="copySite2sourceforge" depends="queryPassword, Make_SVG, make_website">
  		<!--sshexec host="${remote_host}"
  						username="${user}"
  						password="${passphrase}"
@@ -165,12 +177,12 @@
  	</target>
  		
 	<target name="clean">
-		<delete dir="${docs.dir}"/>
+		<delete failonerror="no" dir="${javadocs.dir}"/>
 	</target>
 		
 	<target name="javadoc_package" depends="clean" description="generates javadoc and also UML Diagram">
-		<mkdir dir="${docs.dir}"/>
-	        <javadoc sourcepath="src" packagenames="de.cesr.parma.*" destdir="${docs.dir}" classpath="lib/junit-4.4.jar;lib/log4j-1.2.8.jar;lib/collections-generic-4.01.jar;lib/commons-collections-3.2.jar;">
+		<mkdir dir="${javadocs.dir}"/>
+	        <javadoc sourcepath="src" packagenames="de.cesr.parma.*" destdir="${javadocs.dir}" classpath="lib/junit-4.4.jar;lib/log4j-1.2.8.jar;lib/collections-generic-4.01.jar;lib/commons-collections-3.2.jar;">
 	        	   <doclet name="de.cesr.tools.umlgraph.UmlGraphDoc"
 	        	   	path="lib_tools/UmlGraphSvg.jar">
         	        	<param name="-inferrel" />
@@ -178,33 +190,33 @@
     	   				<param name="-useimports" />
 	        	    </doclet>
 	        	  </javadoc>
-		  <apply executable="dot" dest="${docs.dir}" parallel="false">
+		  <apply executable="dot" dest="${javadocs.dir}" parallel="false">
 		    <arg value="-T${image.type}"/>
 		    <arg value="-o"/>
 		     <targetfile/>
 		     <srcfile/>
-		     <fileset dir="${docs.dir}" includes="**/*.dot"/>
+		     <fileset dir="${javadocs.dir}" includes="**/*.dot"/>
 		     <mapper type="glob" from="*.dot" to="*.${image.type}"/>
 		  </apply>
 	</target>
 	
-	<target name="Make_SVG" depends="make_website, javadoc_classes" description="Generates SVG from DOT and deletes DOT">
+	<target name="Make_SVG" depends="javadoc_classes" description="Generates SVG from DOT and deletes DOT">
 		<echo>"Making SVG..."</echo>
-		 <apply executable="dot" dest="${docs.dir}" parallel="false">
+		 <apply executable="dot" dest="${javadocs.dir}" parallel="false">
 				    <arg value="-T${image.type}"/>
 				    <arg value="-o"/>
 				     <targetfile/>
 				     <srcfile/>
-				     <fileset dir="${docs.dir}" includes="**/*.dot"/>
+				     <fileset dir="${javadocs.dir}" includes="**/*.dot"/>
 				     <mapper type="glob" from="*.dot" to="*.${image.type}"/>
 		</apply>
 		
 		<!-- TODO omit generation of PNG in Doclet -->
 		<delete>
-			<fileset dir="${docs.dir}" includes="**/*.dot"/>
+			<fileset dir="${javadocs.dir}" includes="**/*.dot"/>
 		</delete>
 		<delete>
-			<fileset dir="${docs.dir}" includes="**/*.png"/>
+			<fileset dir="${javadocs.dir}" includes="**/*.png"/>
 		</delete>
 		
 	</target>

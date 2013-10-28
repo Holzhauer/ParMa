@@ -27,3 +27,5 @@ Features
 	* Fine definition of reading order
 	
 	* Checking, if a parameter has been set by calling the <<<isCustomised(PmParameterDefinition definition)>>>
+	
+	* By-passing of reading parameters from Database in case it is not available

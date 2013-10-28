@@ -94,8 +94,7 @@ public class PmDbXmlParameterReader extends PmAbstractParameterReader {
 		
 		if (!file.exists()) {
 			logger.warn("DB Settings XML file ("
-					+ PmParameterManager
-							.getParameter(PmFrameworkPa.DB_SETTINGS_FILE)
+					+ PmParameterManager.getParameter(this.settingsFile)
 					+ ") does not exist! "
 					+ "This might have impacts on further DB parameter initialisatons (e.g. mixing up parameter ID "
 					+ "with wrong DB configuration)!");
