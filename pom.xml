@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ParMa</groupId>
   <artifactId>ParMa</artifactId>
-  <version>0.86</version>
+  <version>0.87</version>
   <name>PARameter-MAnager</name>
   <description>Parameter Handling for ABM</description>
   
