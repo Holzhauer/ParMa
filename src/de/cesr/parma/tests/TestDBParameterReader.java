@@ -77,9 +77,9 @@ public class TestDBParameterReader {
 		PmParameterManager.registerReader(dbXmlReader);
 		PmParameterManager.registerReader(dbReader);
 		
-		assertTrue("", 10 == ((Integer) PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
+		assertTrue("", 10 == ((Integer) PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.init();
-		assertEquals("", 100, ((Integer)PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 100, ((Integer)PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS)).intValue());
 	}
 
 	/**

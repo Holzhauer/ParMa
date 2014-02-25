@@ -2,7 +2,6 @@ CREATE DATABASE  IF NOT EXISTS `holzhauer` /*!40100 DEFAULT CHARACTER SET latin1
 USE `holzhauer`;
 -- MySQL dump 10.13  Distrib 5.5.9, for Win32 (x86)
 --
--- Host: localhost    Database: klimzug
 -- ------------------------------------------------------
 -- Server version	5.5.13
 
@@ -26,7 +25,7 @@ DROP TABLE IF EXISTS `parma_test`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `parma_test` (
   `id` int(11) NOT NULL,
-  `de.cesr.parma.tests.PaBasicPa:NUM_AGENTS` int(11) DEFAULT NULL,
+  `de.cesr.parma.tests.PmBasicPa:NUM_AGENTS` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

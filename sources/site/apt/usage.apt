@@ -3,7 +3,7 @@
 	----------------
 	Sascha Holzhauer
 	----------------
-	2012-07-31
+	2014-02-25
 
  
 Usage 
@@ -17,8 +17,8 @@ Usage
 	
 * The Concept
 
-	The <<<PmParameterManager>>> is the central unit of the ParameterFramework. <<<PmParameterDefinition>>>s are registered at the 
-	manager.
+	The {{{../javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}} is the central unit of the ParameterFramework.
+	{{{../javadoc/de/cesr/parma/core/PmParameterDefinition.html}<<<PmParameterDefinition>>>s}} are registered at the manager.
 	
 	Its <<<init()>>> method is called to read in available parameter
 	data. The way to accomplish that task is defined by <<<PmParameterReader>>>s that are registered at the <<<PmParameterManager>>> and have
@@ -67,7 +67,7 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 ** Adding parameters
 
 	In order to add a parameter you just need to add an enum value. Also consider to add a respective column in the parameter table in case
-	you use the <<<PmDbParameterReader>>> (see {{{PmDbParameterReader}here}} for further instructions).
+	you use the {{{../javadoc/de/cesr/parma/reader/PmDbParameterReader}<<<PmDbParameterReader>>>}} (see {{{PmDbParameterReader}here}} for further instructions).
     
 
 ** Model Initialisation
@@ -101,8 +101,12 @@ int num_total = ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).i
 
 ** PmDbParameterReader
 
-	The <<<PmDbParameterReader>>> connects to a MySQL database using <<<PmFrameworkPa.LOCATION>>>, <<<PmFrameworkPa.DBNAME>>>,
-	<<<PmFrameworkPa.USER>>>, and <<<PmFrameworkPa.PASSWORD>>> and fetches parameter values from a specific row 
+	The {{{../javadoc/de/cesr/parma/reader/PmDbParameterReader}<<<PmDbParameterReader>>>}}
+	connects to a MySQL database using 
+	{{{./javadoc/de/cesr/parma/definition/PmFrameworkPa.html#LOCATION}<<<PmFrameworkPa.LOCATION>>>}},
+	{{{./javadoc/de/cesr/parma/definition/PmFrameworkPa.html#DBNAME}<<<PmFrameworkPa.DBNAME>>>}},
+	{{{../javadoc/de/cesr/parma/definition/PmFrameworkPa.html#USER}<<<PmFrameworkPa.USER>>>}}, and 
+	{{{../javadoc/de/cesr/parma/definition/PmFrameworkPa.html#PASSWORD}<<<PmFrameworkPa.PASSWORD>>>}} and fetches parameter values from a specific row 
 	(<<<PmFrameworkPa.PARAM_SET_ID>>>) of a certain table (<<<PmFrameworkPa.TBLNAME_PARAMS>>>). In doing so it reads all columns that
 	follow the correct naming pattern ([package].[Classname]:[parameter name]), eg. <<<de.cesr.sonomode.param.BasicPa:NUM_AGENTS>>>.
 	Make sure to assign the correct data type to the column that enables Java to assign the value to the parameter.
@@ -235,6 +239,38 @@ PmParameterManager.copyParameterValue(PmFrameworkPa.DBNAME, MSqlPa.DBNAME);
 
 
 * Special Applications
+
+** Specific and/or Multiple Instances of <<<PmParameterManager>>>
+
+	In case there are several instances of a model part that shall all use the same parameter definitions but with different values assigned
+	you need to create several instances of {{{../javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}}:
+	
++--
+PmParameterManager.getNewInstance()
++--
+
+	It is also possible to pass an identifier. This way, the instance is stored and can be obtained with the help of the identifier.
+	This is useful e.g. when you need a specific instance for each region of a spatial simulation. You might want to use the region
+	object as identifier:
+	
++--
+PmParameterManager pm = PmParameterManager.getNewInstance(region);
+PmParameterManager.getInstance(region).setParam(paramDefinition, value);
+PmParameterManager.getInstance(region).getParam(paramDefinition);
++--
+
+	Note that instance methods use the abbreviation "Param": <<<setParam(paramDefinition, value)>>> and 
+	<<<getParam(paramDefinition)>>>. Using <<<pm.getParameter(paramDefinition)>>> results in accessing a different instance
+	(required for backward compatibility)!
+	
+	Furthermore, it is possible to use a static method and pass the identifier object to set the parameter at a specific instance
+	of <<<PmParameterManager>>>:
+	
++--
+PmParameterManager.setParameter(region, paramDefinition, value);
+PmParameterManager.getParameter(region, paramDefinition);
++--
+
 	
 ** Use more than one Database source
 
@@ -287,7 +323,7 @@ new PmXmlParameterReader().initParameters();
 
 ** Parallel Computing
 
-	For instance, if you want to instantiate in parallel several objects of a class with different parameter values using ParMa this 
-	could cause problems. The various instantiation processes all access the same parameter through ParMa. Therefore, it is hard to 
-	assign various values to the same parameter without causing side effects.
-	
+	For instance, if you want to instantiate in parallel several objects of a class with different parameter values using ParMa this
+	requires special consideration: You need to initialise and use a specific instance of 
+	{{{../javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}} for each independent model part to prevent
+	side effects.

@@ -41,7 +41,7 @@ public class TestPmGuiParameterReader {
 	@Ignore // see PmGuiParameterReader
 	public final void testInitParameters() {
 		PmParameterManager.init();
-		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS)).intValue());
 	}
 
 }

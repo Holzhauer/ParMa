@@ -34,13 +34,15 @@ public class TestPmParameterManager {
 	public void defaultParameterValueTest() {
 		PmParameterManager.init();
 		
-		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
-		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.SPECIAL_NUM_AGENTS));
+		assertEquals(10, PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
+		assertEquals(10,
+				PmParameterManager.getParameter(PmBasicPa.SPECIAL_NUM_AGENTS));
 		
-		PmParameterManager.setParameter(PaBasicPa.NUM_AGENTS, 20);
+		PmParameterManager.setParameter(PmBasicPa.NUM_AGENTS, 20);
 		
-		assertEquals(20, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
-		assertEquals(20, PmParameterManager.getParameter(PaBasicPa.SPECIAL_NUM_AGENTS));		
+		assertEquals(20, PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
+		assertEquals(20,
+				PmParameterManager.getParameter(PmBasicPa.SPECIAL_NUM_AGENTS));
 	}
 	
 	
@@ -51,13 +53,16 @@ public class TestPmParameterManager {
 	public void copyParameterValueTest() {
 		PmParameterManager.init();
 		
-		assertEquals( 0, PmParameterManager.getParameter(PaBasicPa.COPY_NUM_AGENTS));
-		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
+		assertEquals(0,
+				PmParameterManager.getParameter(PmBasicPa.COPY_NUM_AGENTS));
+		assertEquals(10, PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
 		
-		PmParameterManager.copyParameterValue(PaBasicPa.NUM_AGENTS, PaBasicPa.COPY_NUM_AGENTS);
+		PmParameterManager.copyParameterValue(PmBasicPa.NUM_AGENTS,
+				PmBasicPa.COPY_NUM_AGENTS);
 		
-		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.COPY_NUM_AGENTS));
-		assertEquals(10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));		
+		assertEquals(10,
+				PmParameterManager.getParameter(PmBasicPa.COPY_NUM_AGENTS));
+		assertEquals(10, PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
 	}
 	
 
@@ -85,11 +90,67 @@ public class TestPmParameterManager {
 			}
 		});
 		PmParameterManager.registerReader(xmlReader);
-		assertEquals("", 10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
+		assertEquals("", 10,
+				PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
 		PmParameterManager.init();
-		assertEquals("", 100, ((Integer) PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS)).intValue());
+		assertEquals("", 100,
+				((Integer) PmParameterManager
+						.getParameter(PmBasicPa.NUM_AGENTS)).intValue());
 		PmParameterManager.reset();
-		assertEquals("", 10, PmParameterManager.getParameter(PaBasicPa.NUM_AGENTS));
+		assertEquals("", 10,
+				PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
 	}
 
+	@Test
+	public void testInstanceCreation() {
+		PmParameterManager.setParameter(PmBasicPa.NUM_AGENTS, new Integer(10));
+		assertEquals(PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS), new Integer(10));
+		
+		PmParameterManager pm = PmParameterManager.getNewInstance();
+		pm.setParam(PmBasicPa.NUM_AGENTS, new Integer(20));
+
+		assertEquals(pm.getParam(PmBasicPa.NUM_AGENTS), new Integer(20));
+		assertEquals(PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS),
+				new Integer(10));
+	}
+
+	@Test
+	public void testInstanceRetrieval() {
+		Object id = new Object();
+		PmParameterManager pm = PmParameterManager.getNewInstance(id);
+
+		PmParameterManager.setParameter(id, PmBasicPa.NUM_AGENTS, new Integer(
+				15));
+
+		assertEquals(PmParameterManager.getParameter(id, PmBasicPa.NUM_AGENTS),
+				new Integer(15));
+		assertEquals(PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS),
+				new Integer(10));
+
+		assertEquals(pm.getParam(PmBasicPa.NUM_AGENTS), new Integer(15));
+		
+		pm.setParam(PmBasicPa.NUM_AGENTS, new Integer(42));
+		assertEquals(pm.getParam(PmBasicPa.NUM_AGENTS), new Integer(42));
+		assertEquals(PmParameterManager.getParameter(id, PmBasicPa.NUM_AGENTS),
+				new Integer(42));
+		assertEquals(PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS),
+				new Integer(10));
+	}
+
+	@Test
+	public void testInstanceReset() {
+		PmParameterManager.setParameter(PmBasicPa.NUM_AGENTS, new Integer(10));
+
+		PmParameterManager pm = PmParameterManager.getNewInstance();
+		pm.setParam(PmBasicPa.NUM_AGENTS, new Integer(15));
+
+		assertEquals(pm.getParam(PmBasicPa.NUM_AGENTS), new Integer(15));
+
+		pm.resetInstance();
+		assertEquals(pm.getParam(PmBasicPa.NUM_AGENTS),
+				PmBasicPa.NUM_AGENTS.getDefaultValue());
+
+		assertEquals(PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS),
+				new Integer(10));
+	}
 }

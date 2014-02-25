@@ -3,7 +3,7 @@
 	----------------
 	Sascha Holzhauer
 	----------------
-	2012-07-31
+	2014-02-25
 	
 	
 Features
@@ -29,3 +29,5 @@ Features
 	* Checking, if a parameter has been set by calling the <<<isCustomised(PmParameterDefinition definition)>>>
 	
 	* By-passing of reading parameters from Database in case it is not available
+	
+	* Running several instances of the parameter manager (e.g. for different parallel simulation parts)

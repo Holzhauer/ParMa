@@ -22,7 +22,6 @@
 package de.cesr.parma.core;
 
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,8 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-
-
 
 /**
  * 
@@ -50,24 +47,197 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 */
 	static private Logger						logger		= Logger.getLogger(PmParameterManager.class);
 
-	static Map<PmParameterDefinition, Object>	params;
-	static Map<PmParameterDefinition, PmParameterDefinition>
+	static PmParameterManager paraManager = null;
+	static Map<Object, PmParameterManager> paraManagers = new HashMap<Object, PmParameterManager>();
+
+	protected Map<PmParameterDefinition, Object>	params;
+	protected Object identifier;
+	protected Map<PmParameterDefinition, PmParameterDefinition>
 												defaultParams;
-	static PmParameterManager					paraManager;
 
-
-	static {
-		initCollections();
-		defaultParams	= new HashMap<PmParameterDefinition,PmParameterDefinition>();
+	/**
+	 * Returns the full parameter definition name containing the name of the
+	 * declaring class.
+	 * 
+	 * @param definition
+	 * @return
+	 */
+	public static String getFullName(PmParameterDefinition definition) {
+		return definition.getDeclaringClass().getName() + "."
+				+ definition.toString();
 	}
+
+	/**
+	 * Checks whether the main instance exists and instantiates if not.
+	 */
+	protected static void checkMainInstance() {
+		if (paraManager == null) {
+			paraManager = new PmParameterManager("values");
+		}
+	}
+
+	/**
+	 * Set every field to null
+	 */
+	public static void reset() {
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Reset Parma Parameter Managers");
+		}
+		// LOGGING ->
+
+		paraManager = null;
+		paraManagers = new HashMap<Object, PmParameterManager>();
+	}
+	
 	
 	/**
-	 * Initialise collections for params and defualtParams. 
+	 * The identifier's toString() is used to mark parameter value loggings for
+	 * this parameter manager.
+	 * 
+	 * @param identifier
 	 */
-	private static void initCollections() {
-		params			= new HashMap<PmParameterDefinition, Object>();
+	private PmParameterManager(Object identifier) {
+		this.identifier = identifier;
+		initInstance();
 	}
 	
+	/* ********************************************************
+	 * Static methods for MAIN instance (compatibility reasons)
+	 */
+
+	/**
+	 * Let registered {@link PmParameterReader}s read parameters.
+	 */
+	public static void init() {
+		checkMainInstance();
+		paraManager.initParameters();
+	}
+
+	/**
+	 * Provides the requested parameter value from the main parameter manager.
+	 * 
+	 * @param parameter
+	 * @return value
+	 */
+	public static Object getParameter(PmParameterDefinition definition) {
+		checkMainInstance();
+		return paraManager.getParam(definition);
+	}
+
+	/**
+	 * Checks whether the given definition has been set at the main parameter
+	 * manager.
+	 * 
+	 * @param definition
+	 *            the definition to check
+	 * @return true if the parameter has been set
+	 */
+	public static boolean isCustomised(PmParameterDefinition definition) {
+		checkMainInstance();
+		return paraManager.isParamCustomised(definition);
+	}
+
+	/**
+	 * Sets the given value for the given parameter definition at the main
+	 * parameter manager.
+	 * 
+	 * @param definition
+	 * @param value
+	 */
+	public static void setParameter(PmParameterDefinition definition,
+			Object value) {
+		checkMainInstance();
+		paraManager.setParam(definition, value);
+	}
+
+	/**
+	 * Registers another parameter definition that is used if there is no value
+	 * set for the given parameter at the main parameter manager.
+	 * 
+	 * @param definition
+	 * @param defaultDefinition
+	 */
+	public static void setDefaultParameterDef(PmParameterDefinition definition,
+			PmParameterDefinition defaultDefinition) {
+		checkMainInstance();
+		paraManager.setDefaultParamDef(definition, defaultDefinition);
+	}
+
+	/**
+	 * Copies the current parameter value of source to the parameter definition
+	 * target at the main parameter manager.
+	 * 
+	 * @param source
+	 * @param target
+	 */
+	public static void copyParameterValue(PmParameterDefinition source,
+			PmParameterDefinition target) {
+		checkMainInstance();
+		paraManager.copyParamValue(source, target);
+	}
+
+	/**
+	 * Register a parameter reader at the main parameter manager.
+	 * 
+	 * @param reader
+	 *            the reader to register
+	 */
+	public static void registerReader(PmParameterReader reader) {
+		checkMainInstance();
+		paraManager.registerParameterReader(reader);
+	}
+
+	/**
+	 * De-register a parameter reader from the main parameter manager.
+	 * 
+	 * @param reader
+	 *            the reader to register
+	 */
+	public static void deregisterReader(PmParameterReader reader) {
+		checkMainInstance();
+		paraManager.deregisterParameterReader(reader);
+	}
+
+	/**
+	 * Logs the current parameter values for parameters that were read into the
+	 * main parameter manager by {@link PmParameterReader}s before. The logger
+	 * name is <code><de.cesr.parma.core.PmParameterManager.values</code>. To
+	 * log all parameter values including the default values for those that have
+	 * not been read use {@link #logParameterValues(PmParameterDefinition[]...)}
+	 * .
+	 */
+	public static void logParameterValues() {
+		checkMainInstance();
+		paraManager.logParamValues();
+	}
+
+	/**
+	 * Logs the current parameter values for the parameters defined in the given
+	 * arrays of type {@link PmParameterDefinition}s. These can be obtained by
+	 * <code>(PmParameterDefinition[])PmFrameworkPa.values()</code>. The logger
+	 * name is <code><de.cesr.parma.core.PmParameterManager.values</code>.
+	 * 
+	 * @param params
+	 */
+	public static void logParameterValues(PmParameterDefinition[]... params) {
+		checkMainInstance();
+		paraManager.logParamValues(params);
+	}
+
+	/* ********************************************************
+	 * ******************************** Instance methods
+	 * ***************************************************
+	 */
+
+	/**
+	 * Initialises maps.
+	 */
+	protected void initInstance() {
+		defaultParams = new HashMap<PmParameterDefinition, PmParameterDefinition>();
+		params = new HashMap<PmParameterDefinition, Object>();
+	}
+
 	/**
 	 * Get any registered parameter.
 	 * If no value is registered for the given parameter
@@ -76,7 +246,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 * @param parameter the {@link PmParameterDefinition} whose value is requested
 	 * @return the parameter's current value
 	 */
-	public static Object getParameter(PmParameterDefinition parameter) {
+	public Object getParam(PmParameterDefinition parameter) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Requested parameter: " + getFullName(parameter));
@@ -89,8 +259,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 			if (defaultParams.containsKey(parameter)) {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug("Request default parameter for " + getFullName(parameter) + 
- " ("
+					logger.debug("Request default parameter for "
+							+ getFullName(parameter) + " ("
 							+ defaultParams.get(parameter) + ")");
 				}
 				// LOGGING ->
@@ -111,14 +281,13 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	}
 
 	/**
-	 * Checks whether the given definition has been set by
-	 * {@link PmParameterManager#setParameter(PmParameterDefinition, Object)}.
+	 * Checks whether the given definition has been set.
 	 * 
 	 * @param definition
 	 *            the definition to check
 	 * @return true if the parameter has been set
 	 */
-	public static boolean isCustomised(PmParameterDefinition definition) {
+	public boolean isParamCustomised(PmParameterDefinition definition) {
 		return params.containsKey(definition);
 	}
 
@@ -126,7 +295,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 * @param definition
 	 * @param value
 	 */
-	public static void setParameter(PmParameterDefinition definition, Object value) {
+	public void setParam(PmParameterDefinition definition, Object value) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Set parameter " + getFullName(definition) + " (" + value + ")");
@@ -169,7 +338,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 * @param definition
 	 * @param defaultDefinition
 	 */
-	public static void setDefaultParameterDef(PmParameterDefinition definition, PmParameterDefinition defaultDefinition) {
+	public void setDefaultParamDef(PmParameterDefinition definition,
+			PmParameterDefinition defaultDefinition) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Set parameter default definition for " + getFullName(definition) + " (" + getFullName(defaultDefinition) + ")");
@@ -186,7 +356,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 * @param source
 	 * @param target
 	 */
-	public static void copyParameterValue(PmParameterDefinition source, PmParameterDefinition target) {
+	public void copyParamValue(PmParameterDefinition source,
+			PmParameterDefinition target) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Copy parameter value from " + getFullName(source) + " to " + getFullName(target));
@@ -195,40 +366,6 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		setParameter(target, getParameter(source));
 	}
 	
-	/**
-	 * Let registered {@link PmParameterReader}s read parameters.
-	 */
-	public static void init() {
-		if (paraManager == null) {
-			paraManager = new PmParameterManager();
-		}
-		paraManager.initParameters();
-	}
-
-	/**
-	 * Register a parameter reader.
-	 * 
-	 * @param reader the reader to register
-	 */
-	public static void registerReader(PmParameterReader reader) {
-		if (paraManager == null) {
-			paraManager = new PmParameterManager();
-		}
-		paraManager.registerParameterReader(reader);
-	}
-
-	/**
-	 * Register a parameter reader.
-	 * 
-	 * @param reader
-	 *            the reader to register
-	 */
-	public static void deregisterReader(PmParameterReader reader) {
-		if (paraManager == null) {
-			paraManager = new PmParameterManager();
-		}
-		paraManager.deregisterParameterReader(reader);
-	}
 	
 	/**
 	 * Logs the current parameter values for parameters that were read into this
@@ -237,8 +374,9 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 * To log all parameter values including the default values for those 
 	 * that have not been read use {@link #logParameterValues(PmParameterDefinition[]...)}. 
 	 */
-	public static void logParameterValues() {
-		Logger valueLogger = Logger.getLogger(PmParameterManager.class.getName() + ".values");
+	public void logParamValues() {
+		Logger valueLogger = Logger.getLogger(PmParameterManager.class
+				.getName() + "." + this);
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
 		for (Entry<PmParameterDefinition, Object> entry : params.entrySet()) {
@@ -248,27 +386,31 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		}
 		valueLogger.info(buffer.toString());
 	}
-	
+
 	/**
-	 * Logs the current parameter values for the parameters defined
-	 * in the given arrays of type {@link PmParameterDefinition}s. These
-	 * can be obtained by <code>(PmParameterDefinition[])PmFrameworkPa.values()</code>.
-	 * The logger name is <code><de.cesr.parma.core.PmParameterManager.values</code>.
+	 * Logs the current parameter values for the parameters defined in the given
+	 * arrays of type {@link PmParameterDefinition}s in this parameter manager.
+	 * These can be obtained by
+	 * <code>(PmParameterDefinition[])PmFrameworkPa.values()</code>. The logger
+	 * name is <code><de.cesr.parma.core.PmParameterManager.values</code>.
+	 * 
 	 * @param params
 	 */
-	public static void logParameterValues(PmParameterDefinition[] ... params) {
+	public void logParamValues(PmParameterDefinition[]... params) {
 		Collection<PmParameterDefinition> paramDefs = new ArrayList<PmParameterDefinition>();
 		for (PmParameterDefinition[] item : params) {
 			paramDefs.addAll(Arrays.asList(item));
 		}
-		Logger valueLogger = Logger.getLogger(PmParameterManager.class.getName() + ".values");
+		Logger valueLogger = Logger.getLogger(PmParameterManager.class
+				.getName() + "." + this);
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Current parameter values: " + System.getProperty("line.separator"));
 		
 		for (PmParameterDefinition parameterDef : paramDefs) {
 			buffer.append("\t" + parameterDef.getDeclaringClass().getName() + "." + parameterDef.toString() + 
 					System.getProperty("line.separator") + "\t -> " + 
-					getParameter(parameterDef) + System.getProperty("line.separator"));
+ getParam(parameterDef)
+					+ System.getProperty("line.separator"));
 		}
 		valueLogger.info(buffer.toString());
 	}
@@ -276,24 +418,140 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	/**
 	 * Set every field to null
 	 */
-	public static void reset() {
+	public void resetInstance() {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
-			logger.debug("Reset Parma Parameter Manager...");
+			logger.debug("Reset Parma Parameter Manager " + this);
 		}
 		// LOGGING ->
-		paraManager = null;
-		params = null;
-		initCollections();
+		this.initInstance();
+	}
+	
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return identifier.toString();
+	}
+	
+	
+	/* *********************************************************************
+	 * INSTANCE MANAGEMENT
+	 **********************************************************************/
+	
+	/**
+	 * Return new instance of parameter manager.
+	 * 
+	 * @return parameter manager
+	 */
+	public static PmParameterManager getNewInstance() {
+		return new PmParameterManager("Unnamed");
 	}
 	
 	/**
-	 * Returns the full parameter definition name containing
-	 * the name of the declaring class.
+	 * Creates a new parameter manager and stores it with key identifier.
+	 * 
+	 * @param identifier
+	 * @return
+	 */
+	public static PmParameterManager getNewInstance(Object identifier) {
+		PmParameterManager pm = new PmParameterManager(identifier);
+		paraManagers.put(identifier, pm);
+		return pm;
+	}
+	
+	/**
+	 * @param identifier
+	 * @return
+	 */
+	public static PmParameterManager getInstance(Object identifier) {
+		return paraManagers.get(identifier);
+	}
+
+	/* *********************************************************************
+	 * STATIC ACCESS METHODS
+	 * ********************************************************************
+	 */
+	
+	/**
+	 * @param identifier
+	 * @param definition
+	 * @param value
+	 */
+	public static void setParameter(Object identifier,
+			PmParameterDefinition definition, Object value) {
+		getInstance(identifier).setParam(definition, value);
+	}
+	
+	/**
+	 * Provides the current parameter value for the given
+	 * {@link PmParameterDefinition} in the parameter manager identified by
+	 * identifier.
+	 * 
+	 * @param identifier
 	 * @param definition
 	 * @return
 	 */
-	public static String getFullName(PmParameterDefinition definition) {
-		return definition.getDeclaringClass().getName() + "."+ definition.toString();
+	public static Object getParameter(Object identifier,
+			PmParameterDefinition definition) {
+		return getInstance(identifier).getParam(definition);
+	}
+
+	/**
+	 * Checks whether the given definition has been set.
+	 * 
+	 * @param definition
+	 *            the definition to check
+	 * @return true if the parameter has been set
+	 */
+	public static boolean isParamCustomised(Object identifier,
+			PmParameterDefinition definition) {
+		return getInstance(identifier).isParamCustomised(definition);
+	}
+
+	/**
+	 * Copies the current parameter value of source to the parameter definition
+	 * target.
+	 * 
+	 * @param source
+	 * @param target
+	 */
+	public static void copyParamValue(Object identifier,
+			PmParameterDefinition source, PmParameterDefinition target) {
+		getInstance(identifier).copyParamValue(source, target);
+	}
+
+	/**
+	 * @param identifier
+	 */
+	public static void resetInstance(Object identifier) {
+		getInstance(identifier).resetInstance();
+	}
+
+	/**
+	 * @param identifier
+	 */
+	public static void initParams(Object identifier) {
+		getInstance(identifier).initParameters();
+	}
+
+	/**
+	 * @param identifier
+	 * @param reader
+	 */
+	public static void registerParamReader(Object identifier,
+			PmParameterReader reader) {
+		getInstance(identifier).registerParameterReader(reader);
+	}
+
+	/**
+	 * @param identifier
+	 * @param reader
+	 */
+	public static void deregisterParamReader(Object identifier,
+			PmParameterReader reader) {
+		getInstance(identifier).deregisterParameterReader(reader);
 	}
 }

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- create a jar archive and puts it into the Sonomode's lib folder -->
+<!-- create a jar archive and puts it into the CRAFTY lib folder -->
 
 <project default="jar_creation">
 	
-	<property name="dir_sonomode" value="${basedir}/../MORe/libs" />
+	<property name="dir_target" value="${basedir}/../../../../mercurial/crafty/socialAgentsDecide/lib" />
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
-	<property name="dir_more" value="${base}/../MORe/libs" />
 	
 	<property name="svn.info.rev" value="Not defined"/>
 	
@@ -27,9 +26,9 @@
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     </target>
 
-	<target name="jar_creation" description="Creates a jar file from ParMa">
+	<target name="jar_creation" depends="svn_infos" description="Creates a jar file from ParMa">
 	
-    <jar destfile="${dir_more}/${jar_name}.jar"
+    <jar destfile="${dir_target}/${jar_name}.jar"
         update="false"
         compress="true"
         duplicate="add">
