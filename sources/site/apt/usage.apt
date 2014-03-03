@@ -3,7 +3,7 @@
 	----------------
 	Sascha Holzhauer
 	----------------
-	2014-02-25
+	2014-03-03
 
  
 Usage 
@@ -17,14 +17,25 @@ Usage
 	
 * The Concept
 
-	The {{{../javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}} is the central unit of the ParameterFramework.
-	{{{../javadoc/de/cesr/parma/core/PmParameterDefinition.html}<<<PmParameterDefinition>>>s}} are registered at the manager.
+	The {{{./javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}} is the central unit of the ParameterFramework.
+	{{{./javadoc/de/cesr/parma/core/PmParameterDefinition.html}<<<PmParameterDefinition>>>s}} are registered at the manager.
 	
 	Its <<<init()>>> method is called to read in available parameter
 	data. The way to accomplish that task is defined by <<<PmParameterReader>>>s that are registered at the <<<PmParameterManager>>> and have
-	a <<<initParameters()>>> method that is called from the manager. If no parameter values are read in, the parameter manager steps
-	back to the default value defined in the <<<PmParameterDefinition>>>.
+	a <<<initParameters()>>> method that is called from the manager. If no parameter values are read in, the parameter manager resolves
+	parameter values in a certain way:
 	
+** Resolving Parameter Values
+
+	See the figure for various scenarios of parameter value resolution.
+	
+[./figures/ParMa_ParameterValueResolution.png] Parameter Value Resolution
+	
+	NOTE: If in a PM a default parameter B is defined for a certain parameter A and parameter A is not assigned a value,
+	ParMa resolves the value for parameter B even if parameter B is not assigned a value in both the current PM
+	and its default PM. Thus, ParMa might step back to the default value of parameter B even if the default
+	PM is assigned a value for parameter A.  
+
 	
 * {Getting ParMa to work}
 
@@ -67,7 +78,7 @@ public enum PmFrameworkPa implements PmParameterDefinition {
 ** Adding parameters
 
 	In order to add a parameter you just need to add an enum value. Also consider to add a respective column in the parameter table in case
-	you use the {{{../javadoc/de/cesr/parma/reader/PmDbParameterReader}<<<PmDbParameterReader>>>}} (see {{{PmDbParameterReader}here}} for further instructions).
+	you use the {{{./javadoc/de/cesr/parma/reader/PmDbParameterReader}<<<PmDbParameterReader>>>}} (see {{{PmDbParameterReader}here}} for further instructions).
     
 
 ** Model Initialisation
@@ -101,12 +112,12 @@ int num_total = ((Integer)PmParameterManager.getParameter(BasicPa.NUM_AGENTS)).i
 
 ** PmDbParameterReader
 
-	The {{{../javadoc/de/cesr/parma/reader/PmDbParameterReader}<<<PmDbParameterReader>>>}}
+	The {{{./javadoc/de/cesr/parma/reader/PmDbParameterReader}<<<PmDbParameterReader>>>}}
 	connects to a MySQL database using 
 	{{{./javadoc/de/cesr/parma/definition/PmFrameworkPa.html#LOCATION}<<<PmFrameworkPa.LOCATION>>>}},
 	{{{./javadoc/de/cesr/parma/definition/PmFrameworkPa.html#DBNAME}<<<PmFrameworkPa.DBNAME>>>}},
-	{{{../javadoc/de/cesr/parma/definition/PmFrameworkPa.html#USER}<<<PmFrameworkPa.USER>>>}}, and 
-	{{{../javadoc/de/cesr/parma/definition/PmFrameworkPa.html#PASSWORD}<<<PmFrameworkPa.PASSWORD>>>}} and fetches parameter values from a specific row 
+	{{{./javadoc/de/cesr/parma/definition/PmFrameworkPa.html#USER}<<<PmFrameworkPa.USER>>>}}, and 
+	{{{./javadoc/de/cesr/parma/definition/PmFrameworkPa.html#PASSWORD}<<<PmFrameworkPa.PASSWORD>>>}} and fetches parameter values from a specific row 
 	(<<<PmFrameworkPa.PARAM_SET_ID>>>) of a certain table (<<<PmFrameworkPa.TBLNAME_PARAMS>>>). In doing so it reads all columns that
 	follow the correct naming pattern ([package].[Classname]:[parameter name]), eg. <<<de.cesr.sonomode.param.BasicPa:NUM_AGENTS>>>.
 	Make sure to assign the correct data type to the column that enables Java to assign the value to the parameter.
@@ -243,7 +254,7 @@ PmParameterManager.copyParameterValue(PmFrameworkPa.DBNAME, MSqlPa.DBNAME);
 ** Specific and/or Multiple Instances of <<<PmParameterManager>>>
 
 	In case there are several instances of a model part that shall all use the same parameter definitions but with different values assigned
-	you need to create several instances of {{{../javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}}:
+	you need to create several instances of {{{./javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}}:
 	
 +--
 PmParameterManager.getNewInstance()
@@ -271,8 +282,15 @@ PmParameterManager.setParameter(region, paramDefinition, value);
 PmParameterManager.getParameter(region, paramDefinition);
 +--
 
+*** Definition of Default PM instance for PM instances
+
+	Often specific parameter values are only required for a limited set of parameters while others shall be 
+	defined globally. For this case, a default instance of {{{./javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}}
+	can be defined for each parameter manager instance. As a consequence, ParMa uses parameter values assigned in
+	the default instance if a value for the particular parameter is not assigned in the current instance. See
+	{{Resolving Parameter Values}} for more information.
 	
-** Use more than one Database source
+** Use more than one Database Source
 
 	In case more than one database sources (also true when more than one tables in the same database shall be accessed) shall be used,
 	one needs to initialise parameters in several steps:
@@ -325,5 +343,5 @@ new PmXmlParameterReader().initParameters();
 
 	For instance, if you want to instantiate in parallel several objects of a class with different parameter values using ParMa this
 	requires special consideration: You need to initialise and use a specific instance of 
-	{{{../javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}} for each independent model part to prevent
+	{{{./javadoc/de/cesr/parma/core/PmParameterManager.html}<<<PmParameterManager>>>}} for each independent model part to prevent
 	side effects.

@@ -3,7 +3,7 @@
 	----------------
 	Sascha Holzhauer
 	----------------
-	2014-02-25
+	2014-03-03
 	
 	
 Features
@@ -31,3 +31,5 @@ Features
 	* By-passing of reading parameters from Database in case it is not available
 	
 	* Running several instances of the parameter manager (e.g. for different parallel simulation parts)
+	
+	* Setting other instances as default parameter manager to consult if no value is assigned for the requested parameter

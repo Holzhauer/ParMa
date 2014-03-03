@@ -52,6 +52,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 
 	protected Map<PmParameterDefinition, Object>	params;
 	protected Object identifier;
+	protected PmParameterManager defaultPm;
 	protected Map<PmParameterDefinition, PmParameterDefinition>
 												defaultParams;
 
@@ -266,6 +267,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 				// LOGGING ->
 
 				return getParameter(defaultParams.get(parameter));
+			} else if (defaultPm != null) {
+				return defaultPm.getParam(parameter);
 			} else {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
@@ -348,10 +351,20 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		defaultParams.put(definition, defaultDefinition);
 	}
 
+	/**
+	 * Sets the default {@link PmParameterManager} that is consulted in case
+	 * this {@link PmParameterManager} has no value assigned for a certain
+	 * parameter (and no default parameter defined).
+	 * 
+	 * @param defaultPm
+	 */
+	public void setDefaultPm(PmParameterManager defaultPm) {
+		this.defaultPm = defaultPm;
+	}
 
 	/**
-	 * Copies the current parameter value of source to the parameter
-	 * definition target.
+	 * Copies the current parameter value of source to the parameter definition
+	 * target.
 	 * 
 	 * @param source
 	 * @param target
@@ -449,7 +462,18 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	public static PmParameterManager getNewInstance() {
 		return new PmParameterManager("Unnamed");
 	}
-	
+
+	/**
+	 * Return new instance of parameter manager.
+	 * 
+	 * @return parameter manager
+	 */
+	public static PmParameterManager getNewInstance(PmParameterManager defaultPm) {
+		PmParameterManager pm = new PmParameterManager("Unnamed");
+		pm.setDefaultPm(defaultPm);
+		return pm;
+	}
+
 	/**
 	 * Creates a new parameter manager and stores it with key identifier.
 	 * 
@@ -461,13 +485,34 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		paraManagers.put(identifier, pm);
 		return pm;
 	}
-	
+
 	/**
+	 * Creates a new parameter manager and stores it with key identifier.
+	 * 
 	 * @param identifier
 	 * @return
 	 */
+	public static PmParameterManager getNewInstance(Object identifier,
+			PmParameterManager defaultPm) {
+		PmParameterManager pm = new PmParameterManager(identifier);
+		pm.setDefaultPm(defaultPm);
+		paraManagers.put(identifier, pm);
+		return pm;
+	}
+
+	/**
+	 * If identifier is null, it return the main static instance of
+	 * {@link PmParameterManager}.
+	 * 
+	 * @param identifier
+	 * @return instance of {@link PmParameterManager}
+	 */
 	public static PmParameterManager getInstance(Object identifier) {
-		return paraManagers.get(identifier);
+		if (identifier == null) {
+			return paraManager;
+		} else {
+			return paraManagers.get(identifier);
+		}
 	}
 
 	/* *********************************************************************

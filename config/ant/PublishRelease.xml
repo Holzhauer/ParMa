@@ -7,7 +7,7 @@
  	
  	<property file="../../project.properties"/>
  	
- 	<property name="dest_dir" location="//Usf/home/holzhauer/Generell/Releases/ParMa/" />
+ 	<property name="dest_dir" location="C:\Users\holzhauer\Desktop\WORK\Generell\Releases\ParMa" />
  	
  	<property name="src_java_dir" location="../../" />
  	<property name="src_doc_dir" location="../../doc" />

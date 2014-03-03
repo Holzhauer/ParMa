@@ -138,6 +138,27 @@ public class TestPmParameterManager {
 	}
 
 	@Test
+	public void testDefaultPm() {
+		PmParameterManager pm = PmParameterManager.getNewInstance();
+
+		// no default pm defined:
+		assertEquals(
+				((Integer) PmBasicPa.NUM_AGENTS.getDefaultValue()).intValue(),
+				((Integer) pm.getParam(PmBasicPa.NUM_AGENTS)).intValue());
+
+		// default pm defined:
+		PmParameterManager.setParameter(PmBasicPa.NUM_AGENTS, new Integer(42));
+
+		PmParameterManager defaultPm = PmParameterManager.getNewInstance();
+		defaultPm.setParam(PmBasicPa.NUM_AGENTS, new Integer(34));
+
+		pm.setDefaultPm(defaultPm);
+
+		assertEquals(34,
+				((Integer) pm.getParam(PmBasicPa.NUM_AGENTS)).intValue());
+	}
+
+	@Test
 	public void testInstanceReset() {
 		PmParameterManager.setParameter(PmBasicPa.NUM_AGENTS, new Integer(10));
 
