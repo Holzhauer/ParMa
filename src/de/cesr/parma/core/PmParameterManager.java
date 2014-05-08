@@ -78,6 +78,42 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	}
 
 	/**
+	 * @param param
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static PmParameterDefinition parse(String param) {
+		String param_class, param_name;
+		try {
+			param_class = param.split(":")[0];
+			param_name = param.split(":")[1];
+		} catch (ArrayIndexOutOfBoundsException exception) {
+			// <- LOGGING
+			logger.error("You probabliy have an error in your parameter XML/CSV file (near "
+					+ param
+					+ "):"
+					+ "Please, stick to the form PACKAGE.CLASS:PARAMETER");
+			// LOGGING ->
+			throw new RuntimeException(
+					"You probabliy have an error in your parameter XML/CSV file (near "
+							+ param
+							+ "):"
+							+ "Please, stick to the form PACKAGE.CLASS:PARAMETER");
+		}
+
+		PmParameterDefinition definition = null;
+
+		try {
+			definition = (PmParameterDefinition) Enum.valueOf(
+					(Class<Enum>) Class.forName(param_class), param_name);
+		} catch (ClassNotFoundException exception) {
+			logger.error("Error while parsing parameter " + param);
+			exception.printStackTrace();
+		}
+		return definition;
+	}
+
+	/**
 	 * Set every field to null
 	 */
 	public static void reset() {
@@ -305,33 +341,37 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		}
 		// LOGGING ->
 
+		Object result = null;
+
 		// TODO extend conversion
 		if (definition.getType() == Integer.class && value instanceof String) {
-			value = Integer.parseInt((String) value);
+			result = Integer.parseInt((String) value);
 		} else if (definition.getType() == Double.class && value instanceof String) {
-			value = Double.parseDouble((String) value);
+			result = Double.parseDouble((String) value);
 		} else if (definition.getType() == Float.class && value instanceof String) {
-			value = Float.parseFloat((String) value);
+			result = Float.parseFloat((String) value);
 		} else if (definition.getType() == Long.class && value instanceof String) {
-			value = Long.parseLong((String) value);
+			result = Long.parseLong((String) value);
 		} else if (definition.getType() == Short.class && value instanceof String) {
-			value = Short.parseShort((String) value);
+			result = Short.parseShort((String) value);
 		} else if (definition.getType() == Boolean.class && value instanceof String) {
-			value = Boolean.parseBoolean((String) value);
+			result = Boolean.parseBoolean((String) value);
 		}
 		
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
-			logger.debug("Value after conversion: " + value);
+			logger.debug("Value after conversion: " + result);
 		}
 
-		if (value != null && value != null
-				&& !definition.getType().isAssignableFrom(value.getClass())) {
+		if (result != null
+				&& !definition.getType().isAssignableFrom(result.getClass())) {
 
-			logger.warn(getFullName(definition) + ": The given value (" + value + ") of type " + value.getClass() + " is not assignable to the "
+			logger.warn(getFullName(definition) + ": The given value ("
+					+ result + ") of type " + result.getClass()
+					+ " is not assignable to the "
 					+ "type specified in the parameter definition (" + definition.getType() + ")!");
 		}
-		params.put(definition, value);
+		params.put(definition, result);
 	}
 	
 	/**
@@ -509,9 +549,17 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 */
 	public static PmParameterManager getInstance(Object identifier) {
 		if (identifier == null) {
+			checkMainInstance();
 			return paraManager;
 		} else {
-			return paraManagers.get(identifier);
+			if (!paraManagers.containsKey(identifier)) {
+				logger.warn("No PmParameterManager registered for identifier "
+						+ identifier
+						+ "! Maybe you want to call getNewInstance(identifier).");
+				return null;
+			} else {
+				return paraManagers.get(identifier);
+			}
 		}
 	}
 

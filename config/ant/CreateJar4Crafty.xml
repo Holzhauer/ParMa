@@ -26,7 +26,7 @@
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     </target>
 
-	<target name="jar_creation" depends="svn_infos" description="Creates a jar file from ParMa">
+	<target name="jar_creation" description="Creates a jar file from ParMa">
 	
     <jar destfile="${dir_target}/${jar_name}.jar"
         update="false"
