@@ -277,8 +277,9 @@ public class PmParameterManager extends PmAbstractParameterReader {
 
 	/**
 	 * Get any registered parameter.
-	 * If no value is registered for the given parameter
-	 * it request the default parameter and return it if defined.
+	 * If no value is registered for the given parameter at this PM
+	 * it requests the default parameter of this PM and return it if defined.
+	 * Otherwise, the request is delegated to the default PM. 
 	 * 
 	 * @param parameter the {@link PmParameterDefinition} whose value is requested
 	 * @return the parameter's current value
@@ -302,7 +303,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 				}
 				// LOGGING ->
 
-				return getParameter(defaultParams.get(parameter));
+				return getParam(defaultParams.get(parameter));
 			} else if (defaultPm != null) {
 				return defaultPm.getParam(parameter);
 			} else {
