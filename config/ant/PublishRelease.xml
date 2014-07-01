@@ -7,7 +7,7 @@
  	
  	<property file="../../project.properties"/>
  	
- 	<property name="dest_dir" location="C:\Users\holzhauer\Desktop\WORK\Generell\Releases\ParMa" />
+ 	<property name="dest_dir" location="C:\Data\General\Releases\ParMa" />
  	
  	<property name="src_java_dir" location="../../" />
  	<property name="src_doc_dir" location="../../doc" />
@@ -35,8 +35,10 @@
     	message="Set version correctly in project.properties and pom.xml? (y/n)?"
     	validargs="y,n"
 		defaultvalue="y"
-    	addproperty="do.delete"
-	/>
+    	addproperty="do.delete">
+		
+	</input>
+ 	
 	<condition property="do.abort">
 	<equals arg1="n" arg2="${do.delete}"/>
 	</condition>
@@ -47,7 +49,7 @@
     <target name="svn_infos" description="Fetch SVN infos">
     	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpath="" />
     	<svn javahl="false" username="holzhauer" password="holzhauer">
-    		<info target="${basedir}"/>
+    		<info target="${basedir}/../../"/>
     	</svn>
     	<echo>"Last Revision: ${svn.info.rev}"</echo>
     </target>
@@ -59,7 +61,7 @@
 		</delete>
 
  		<echo>"Create website..."</echo>
- 		  <artifact:mvn pom="${basedir}/../../pom.xml" mavenHome="C:/Users/holzhauer/Programme/apache-maven-3.0.4" fork="true">
+ 		  <artifact:mvn pom="${basedir}/../../pom.xml" mavenHome="C:/Data/General/Programme/apache-maven-3.2.2" fork="true">
  		    <arg value="site:site"/>
  		  </artifact:mvn>
  	</target>
@@ -120,18 +122,21 @@
 		 
 	</target>
  	
+ 	<taskdef name="logindialog" classname="antlogindialog.PasswordTask" classpath="" />
  	
  	<target name="queryPassword">
-		<input
+		<!--input
 			message="Enter passwort!"
-			addproperty="passphrase"
-		/>
+			addproperty="passphrase">
+			<handler type="secure"/>
+		</input-->
+ 		<logindialog message="Login Details: " username="username" defaultusername="${user}" password="passphrase"/>
  	</target>
 			
 	
  	<target name="copySite2sourceforge" depends="queryPassword, Make_SVG, make_website">
  		<!--sshexec host="${remote_host}"
- 						username="${user}"
+ 						username="${username}"
  						password="${passphrase}"
  					  	trust="true"
  						command="date"/-->
@@ -201,7 +206,7 @@
 	</target>
 	
 	<target name="Make_SVG" depends="javadoc_classes" description="Generates SVG from DOT and deletes DOT">
-		<echo>"Making SVG..."</echo>
+		<echo>Making SVG...${javadocs.dir}</echo>
 		 <apply executable="dot" dest="${javadocs.dir}" parallel="false">
 				    <arg value="-T${image.type}"/>
 				    <arg value="-o"/>

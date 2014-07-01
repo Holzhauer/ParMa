@@ -322,11 +322,13 @@ public class PmParameterManager extends PmAbstractParameterReader {
 			// LOGGING ->
 
 			return getParam(defaultParams.get(parameter));
+		
+		} else if (staticDefaultParams.containsKey(parameter)) {
+			return this.getParam(staticDefaultParams.get(parameter));
+		
 		} else if (defaultPm != null) {
 			return defaultPm.getParam(parameter);
 			
-		} else if (staticDefaultParams.containsKey(parameter)) {
-			return this.getParam(staticDefaultParams.get(parameter));
 		} else {
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {

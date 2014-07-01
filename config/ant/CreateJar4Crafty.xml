@@ -3,7 +3,7 @@
 
 <project default="jar_creation">
 	
-	<property name="dir_target" value="${basedir}/../../../../mercurial/crafty/socialAgentsDecide/lib" />
+	<property name="dir_target" value="${basedir}/../../../CRAFTY_Social/lib" />
 	<property name="jar_name" value="ParMa" />
 	<property name="base" value="${basedir}/../.." />
 	
@@ -40,6 +40,6 @@
             <attribute name="Built-Date" value="${TODAY}"/>
         </manifest>
     </jar>
-	<echo>${dir_more}/${jar_name}.jar</echo>
+	<echo>${dir_target}/${jar_name}.jar</echo>
 </target>
 </project>

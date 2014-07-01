@@ -45,6 +45,27 @@ public class TestPmParameterManager {
 				PmParameterManager.getParameter(PmBasicPa.SPECIAL_NUM_AGENTS));
 	}
 	
+	@Test
+	public void staticDefaultParameterValueTest() {
+		PmParameterManager.init();
+
+		Object id = new Object();
+		PmParameterManager pm = PmParameterManager.getNewInstance(id);
+		
+		PmParameterManager defaultPm = PmParameterManager.getNewInstance();
+		pm.setDefaultPm(defaultPm);
+
+		
+		pm.setParam(PmComplexPa.NUM_AGENTS, 22);
+				
+		assertEquals(22, pm.getParam(PmComplexPa.NUM_AGENTS));
+		assertEquals(22, pm.getParam(PmComplexPa.SPECIAL_NUM_AGENTS));
+	
+		assertEquals(10, defaultPm.getParam(PmComplexPa.SPECIAL_NUM_AGENTS));
+		
+		pm.setDefaultParamDef(PmComplexPa.SPECIAL_NUM_AGENTS, PmComplexPa.NEW_NUM_AGENTS);
+		assertEquals(12, pm.getParam(PmComplexPa.SPECIAL_NUM_AGENTS));
+	}
 	
 	/**
 	 * 
