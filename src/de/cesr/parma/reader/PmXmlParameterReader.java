@@ -21,7 +21,6 @@
  */
 package de.cesr.parma.reader;
 
-import static de.cesr.parma.core.PmParameterManager.setParameter;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,33 +57,43 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 
 	PmParameterDefinition settingsFile;
 	
+	PmParameterManager pm;
+	
+	/**
+	 * @param pm
+	 * @param settingsFile
+	 */
+	public PmXmlParameterReader(PmParameterManager pm, PmParameterDefinition settingsFile) {
+		this.pm = pm;
+		this.settingsFile = settingsFile;
+	}
+	
 	/**
 	 * @param settingsFile parameter definition of location of XML file that specifies general settings
 	 */
 	public PmXmlParameterReader(PmParameterDefinition settingsFile) {
-		this.settingsFile = settingsFile;
+		this(PmParameterManager.getInstance(null), settingsFile);
 	}
 	
 	/**
 	 * Uses {@link PmFrameworkPa#XML_PARAMETER_FILE as source.}
 	 */
 	public PmXmlParameterReader() {
-		this.settingsFile = PmFrameworkPa.XML_PARAMETER_FILE;
+		this(PmFrameworkPa.XML_PARAMETER_FILE);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" }) // Enum type is clear
 	public void initParameters() {
 		try {
 			
 			logger.info("Read settings from XML-File " + settingsFile); 
 					
-			File file = new File((String) PmParameterManager.getParameter(settingsFile));
+			File file = new File((String) pm.getParam(settingsFile));
 			
 			if (!file.exists()) {
 				logger.warn("Settings XML file (" + file + ") does not exist!");
 			} else {
-			
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = dbf.newDocumentBuilder();
 				Document doc = db.parse(file);
@@ -126,12 +135,12 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 								if (definition.getType() == Class.class) {
 									// handle Class.class parameter types:
 									if (value.toString().length() > 0) {
-										setParameter(definition,
+										pm.setParam(definition,
 												Class.forName(value));
 									}
 								} else {
 									// handle all other parameter types:
-									setParameter(definition, value);
+									pm.setParam(definition, value);
 								}
 								
 							} catch (ClassNotFoundException e1) {
@@ -143,7 +152,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 					}
 				}
 				else {
-					logger.warn("Parameter XML file " + PmParameterManager.getParameter(settingsFile) + " does not contain" +
+					logger.warn("Parameter XML file " + pm.getParam(settingsFile) + " does not contain" +
 							" any parameter defualtParams");
 				}
 			}

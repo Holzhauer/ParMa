@@ -145,7 +145,7 @@
 <div class="section">
 <h4>Resolving Parameter Values<a name="Resolving_Parameter_Values"></a></h4>
 <p>See the figure for various scenarios of parameter value resolution.</p><img src="./figures/ParMa_ParameterValueResolution.png" alt="Parameter Value Resolution" />
-<p>NOTE: Generally, default parameters have precedence before default PMs: If in a PM a default parameter B is defined for a certain parameter A and parameter A is not assigned a value, ParMa resolves the value for parameter B even if parameter B is not assigned a value in both the current PM and its default PM. Thus, ParMa might step back to the default value of parameter B even if the default PM has assigned a value for parameter A.</p></div></div>
+<p>NOTE: Generally, default parameters have precedence before default PMs: If in a PM a default parameter B is defined for a certain parameter A and parameter A is not assigned a value, ParMa resolves the value for parameter B even if parameter B is not assigned a value in both the current PM and its default PM (and even if the default PM defines a value for parameter A). Thus, ParMa might step back to the default value of parameter B even if the default PM has assigned a value for parameter A.</p></div></div>
 <div class="section">
 <h3><a name="Getting_ParMa_to_work">Getting ParMa to work</a></h3>
 <div class="section">

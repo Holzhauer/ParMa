@@ -21,14 +21,10 @@
  */
 package de.cesr.parma.core;
 
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-
-
 
 /**
  * PARameter MAnager
@@ -42,9 +38,10 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	/**
 	 * Logger
 	 */
-	static private Logger			logger	= Logger.getLogger(PmAbstractParameterReader.class);
+	static private Logger logger = Logger
+			.getLogger(PmAbstractParameterReader.class);
 
-	Collection < PmParameterReader >	readers	= new ArrayList < PmParameterReader >();
+	Collection<PmParameterReader> readers = new ArrayList<PmParameterReader>();
 
 	/**
 	 * @see de.cesr.parma.core.PmParameterReader#initParameters()
@@ -54,15 +51,17 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 		for (PmParameterReader reader : readers) {
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Initialisation of parameter reader " + reader + " started");
+				logger.debug("Initialisation of parameter reader " + reader
+						+ " started");
 			}
 			// LOGGING ->
-			
+
 			reader.initParameters();
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Initialisation of parameter reader " + reader + " finished");
+				logger.debug("Initialisation of parameter reader " + reader
+						+ " finished");
 			}
 			// LOGGING ->
 
@@ -75,10 +74,13 @@ public abstract class PmAbstractParameterReader implements PmParameterReader {
 	public void registerParameterReader(PmParameterReader reader) {
 		readers.add(reader);
 	}
-	
+
 	/**
-	 * Cancels registration of the given reader, i.e. it is no longer used to initialise parameters.
-	 * @param reader reader to deregister
+	 * Cancels registration of the given reader, i.e. it is no longer used to
+	 * initialise parameters.
+	 * 
+	 * @param reader
+	 *            reader to deregister
 	 */
 	public void deregisterParameterReader(PmParameterReader reader) {
 		readers.remove(reader);

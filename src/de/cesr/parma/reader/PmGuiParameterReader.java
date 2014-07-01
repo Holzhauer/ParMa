@@ -51,6 +51,7 @@ import de.cesr.parma.core.PmParameterDefinition;
  * TODO type check
  * TODO choose from registered parameter definitions
  * TODO make wait for dialog
+ * TODO convert to pm instance approach
  * 
  * @author Holzhauer
  * @date 08.01.2009
@@ -169,6 +170,7 @@ class ParameterDialog extends JDialog implements ActionListener {
 		dispose();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setParameterValue() {
 
 		String tagName = getName();

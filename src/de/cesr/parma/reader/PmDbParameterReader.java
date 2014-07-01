@@ -21,10 +21,6 @@
  */
 package de.cesr.parma.reader;
 
-
-import static de.cesr.parma.core.PmParameterManager.getParameter;
-import static de.cesr.parma.core.PmParameterManager.setParameter;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -38,19 +34,19 @@ import de.cesr.parma.core.PmParameterDefinition;
 import de.cesr.parma.core.PmParameterManager;
 import de.cesr.parma.definition.PmFrameworkPa;
 
-
 /**
  * 
- * Parameter retrieval from MySQL databases
- * PARameter MAnager
+ * Parameter retrieval from MySQL databases PARameter MAnager
  * 
- * Connects to a MySQL database using parameter values of {@link PmFrameworkPa#LOCATION}, {@link PmFrameworkPa#DBNAME},
- * {@link PmFrameworkPa#USER}, and {@link PmFrameworkPa#PASSWORD} and reads in parameter values from
- * {@link PmFrameworkPa#TBLNAME_PARAMS} (the row that is defined by parameter set id - see
- * {@link #PmDbParameterReader(PmParameterDefinition)}). 
- * This reader enables the use of other db settings and tables than defined in PmFrameworkPa
- * via setter methods for theses settings. However, defaults are the values of {@link PmFrameworkPa}.
- * See documentation for further instructions.
+ * Connects to a MySQL database using parameter values of
+ * {@link PmFrameworkPa#LOCATION}, {@link PmFrameworkPa#DBNAME},
+ * {@link PmFrameworkPa#USER}, and {@link PmFrameworkPa#PASSWORD} and reads in
+ * parameter values from {@link PmFrameworkPa#TBLNAME_PARAMS} (the row that is
+ * defined by parameter set id - see
+ * {@link #PmDbParameterReader(PmParameterDefinition)}). This reader enables the
+ * use of other db settings and tables than defined in PmFrameworkPa via setter
+ * methods for theses settings. However, defaults are the values of
+ * {@link PmFrameworkPa}. See documentation for further instructions.
  * 
  * @author Sascha Holzhauer
  * @date 29.06.2010
@@ -61,19 +57,35 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	/**
 	 * Logger
 	 */
-	static private Logger	logger	= Logger.getLogger(PmDbParameterReader.class);
+	static private Logger logger = Logger.getLogger(PmDbParameterReader.class);
 
 	public static final String NOT_DEFINED = "NOT DEFINED";
 
-	private Connection		con;
+	private Connection con;
 	private final PmParameterDefinition paramSetId;
 
-	
-	protected PmParameterDefinition dbTable 	= PmFrameworkPa.TBLNAME_PARAMS;
-	protected PmParameterDefinition dbLocation	= PmFrameworkPa.LOCATION;
-	protected PmParameterDefinition dbName		= PmFrameworkPa.DBNAME	;
-	protected PmParameterDefinition dbUser		= PmFrameworkPa.USER;
-	protected PmParameterDefinition dbPassword	= PmFrameworkPa.PASSWORD;
+	protected PmParameterManager pm;
+
+	protected PmParameterDefinition dbTable = PmFrameworkPa.TBLNAME_PARAMS;
+	protected PmParameterDefinition dbLocation = PmFrameworkPa.LOCATION;
+	protected PmParameterDefinition dbName = PmFrameworkPa.DBNAME;
+	protected PmParameterDefinition dbUser = PmFrameworkPa.USER;
+	protected PmParameterDefinition dbPassword = PmFrameworkPa.PASSWORD;
+
+	/**
+	 * Uses the given parameter definition as parameter set ID.
+	 * 
+	 * @param pm
+	 *            the parameter manager to store read parameter at
+	 * @param paramSetId
+	 *            the parameter definition that specifies the parameter set id
+	 *            for which parameter definitions shall be fetched from DB,
+	 */
+	public PmDbParameterReader(PmParameterManager pm,
+			PmParameterDefinition paramSetId) {
+		this.pm = pm;
+		this.paramSetId = paramSetId;
+	}
 
 	/**
 	 * Uses the given parameter definition as parameter set ID.
@@ -83,19 +95,21 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	 *            for which parameter definitions shall be fetched from DB,
 	 */
 	public PmDbParameterReader(PmParameterDefinition paramSetId) {
-		this.paramSetId = paramSetId;
+		this(PmParameterManager.getInstance(null), paramSetId);
 	}
 
 	/**
 	 * Uses {@link PmFrameworkPa#PARAM_SET_ID} as parameter set ID.
 	 */
 	public PmDbParameterReader() {
-		this.paramSetId = PmFrameworkPa.PARAM_SET_ID;
+		this(PmFrameworkPa.PARAM_SET_ID);
 	}
+
 	/**
 	 * @see de.cesr.parma.core.PmAbstractParameterReader#initParameters()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	// type of Enum is clear
 	@Override
 	public void initParameters() {
 
@@ -111,9 +125,9 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		String t1 = (String) getParameter(dbTable);
-		
+
+		String t1 = (String) pm.getParam(dbTable);
+
 		if (t1.equals(NOT_DEFINED)) {
 			// <- LOGGING
 			logger.warn("Table is set to " + NOT_DEFINED
@@ -122,7 +136,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 		} else {
 
 			String sql = "SELECT * FROM `" + t1 + "` AS t1 WHERE t1.id = "
-					+ getParameter(this.paramSetId) + ";";
+					+ pm.getParam(this.paramSetId) + ";";
 			logger.debug("SQL-statement to fetch params: " + sql);
 
 			ResultSet result = connect(sql);
@@ -132,13 +146,10 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 
 				if (!result.next()) {
 					logger.error("No parameter set in table for paramID "
-							+ PmParameterManager.getParameter(this.paramSetId));
+							+ pm.getParam(this.paramSetId));
 					throw new IllegalStateException(
-							"No parameter set in table "
-									+ t1
-									+ " for paramID "
-									+ PmParameterManager
-											.getParameter(this.paramSetId));
+							"No parameter set in table " + t1 + " for paramID "
+									+ pm.getParam(this.paramSetId));
 				}
 
 				for (int i = 1; i <= result.getMetaData().getColumnCount(); i++) {
@@ -166,13 +177,13 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 											+ " contains withspaces. Maybe it is some hint.");
 								} else if (result.getObject(i).toString()
 										.length() > 0) {
-									setParameter(definition,
-											Class.forName((String) result
+									pm.setParam(definition, Class
+											.forName((String) result
 													.getObject(i)));
 								}
 							} else {
 								// handle all other parameter types:
-								setParameter(definition, result.getObject(i));
+								pm.setParam(definition, result.getObject(i));
 							}
 
 							logger.info("Parameter "
@@ -239,34 +250,40 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	}
 
 	/**
-	 * Tries to establish a JDBC Connection to the MySQL database given the settings provided to the constructor.
+	 * Tries to establish a JDBC Connection to the MySQL database given the
+	 * settings provided to the constructor.
 	 * 
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	protected Connection getConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException,
-			SQLException {
+	protected Connection getConnection() throws InstantiationException,
+			IllegalAccessException, ClassNotFoundException, SQLException {
 
 		Properties properties = new Properties();
-		properties.put("user", getParameter(dbUser));
-		properties.put("password", getParameter(dbPassword));
-		String connectTo = "jdbc:mysql://" + getParameter(dbLocation) 
-			+ (((String) getParameter(dbLocation)).endsWith("/") ? "" : "/")+ getParameter(dbName);
+		properties.put("user", pm.getParam(dbUser));
+		properties.put("password", pm.getParam(dbPassword));
+		String connectTo = "jdbc:mysql://" + pm.getParam(dbLocation)
+				+ (((String) pm.getParam(dbLocation)).endsWith("/") ? "" : "/")
+				+ pm.getParam(dbName);
 
 		// error handling:
-		if (getParameter(dbLocation) == null) {
-			throw new IllegalArgumentException("Invalid database settings: Invalid database location!");
+		if (pm.getParam(dbLocation) == null) {
+			throw new IllegalArgumentException(
+					"Invalid database settings: Invalid database location!");
 		}
-		if (getParameter(dbName) == null) {
-			throw new IllegalArgumentException("Invalid database settings: Invalid database name!");
+		if (pm.getParam(dbName) == null) {
+			throw new IllegalArgumentException(
+					"Invalid database settings: Invalid database name!");
 		}
-		if (getParameter(dbUser) == null) {
-			throw new IllegalArgumentException("Invalid database settings: Invalid user name!");
+		if (pm.getParam(dbUser) == null) {
+			throw new IllegalArgumentException(
+					"Invalid database settings: Invalid user name!");
 		}
-		if (getParameter(dbPassword) == null) {
-			throw new IllegalArgumentException("Invalid database settings: Invalid password!");
+		if (pm.getParam(dbPassword) == null) {
+			throw new IllegalArgumentException(
+					"Invalid database settings: Invalid password!");
 		}
 
 		Class.forName("com.mysql.jdbc.Driver").newInstance();

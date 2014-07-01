@@ -33,8 +33,14 @@ import org.apache.log4j.Logger;
 /**
  * 
  * Defines an interface for classes that provide parameter values. Also defines
- * all parameters used throughout the model. See
- * ParametrFramework_Documentation.doc for further information!
+ * all parameters used throughout the model.
+ * 
+ * {@link PmParameterManager}s can be associated with an {@link Object} and referenced by that
+ * from this class ({@link this#getInstance(Object)}. However, this is not mandatory and basic 
+ * operations (e.g. parameter reading) work with {@link PmParameterManager}s directly.
+ * 
+ * TODO incorporate to site doc
+ * See ParametrFramework_Documentation.doc for further information!
  * 
  * @author Holzhauer
  * @date 08.01.2009
@@ -530,23 +536,12 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 */
 
 	/**
-	 * Return new instance of parameter manager.
+	 * Return new instance of parameter manager that is NOT registered.
 	 * 
 	 * @return parameter manager
 	 */
 	public static PmParameterManager getNewInstance() {
 		return new PmParameterManager("Unnamed");
-	}
-
-	/**
-	 * Return new instance of parameter manager.
-	 * 
-	 * @return parameter manager
-	 */
-	public static PmParameterManager getNewInstance(PmParameterManager defaultPm) {
-		PmParameterManager pm = new PmParameterManager("Unnamed");
-		pm.setDefaultPm(defaultPm);
-		return pm;
 	}
 
 	/**
@@ -557,26 +552,16 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	 */
 	public static PmParameterManager getNewInstance(Object identifier) {
 		PmParameterManager pm = new PmParameterManager(identifier);
+		if (paraManagers.containsKey(identifier)) {
+			logger.warn("There is still an PmParameterManager registered by identifier " + identifier + 
+					" which is now replaced. Consider using resetInstance() instead!");
+		}
 		paraManagers.put(identifier, pm);
 		return pm;
 	}
 
 	/**
-	 * Creates a new parameter manager and stores it with key identifier.
-	 * 
-	 * @param identifier
-	 * @return
-	 */
-	public static PmParameterManager getNewInstance(Object identifier,
-			PmParameterManager defaultPm) {
-		PmParameterManager pm = new PmParameterManager(identifier);
-		pm.setDefaultPm(defaultPm);
-		paraManagers.put(identifier, pm);
-		return pm;
-	}
-
-	/**
-	 * If identifier is null, it return the main static instance of
+	 * If identifier is null, it returns the main static instance of
 	 * {@link PmParameterManager}.
 	 * 
 	 * @param identifier
