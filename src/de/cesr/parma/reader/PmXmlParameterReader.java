@@ -87,7 +87,7 @@ public class PmXmlParameterReader extends PmAbstractParameterReader {
 	public void initParameters() {
 		try {
 			
-			logger.info("Read settings from XML-File " + settingsFile); 
+			logger.info("Read settings from XML-File " + pm.getParam(settingsFile)); 
 					
 			File file = new File((String) pm.getParam(settingsFile));
 			

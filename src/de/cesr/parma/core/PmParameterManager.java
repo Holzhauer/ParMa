@@ -455,7 +455,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 					+ " to " + getFullName(target));
 		}
 		// LOGGING ->
-		setParameter(target, getParameter(source));
+		setParam(target, getParam(source));
 	}
 
 	/**

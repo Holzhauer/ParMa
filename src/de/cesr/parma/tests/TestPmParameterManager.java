@@ -208,4 +208,20 @@ public class TestPmParameterManager {
 
 		assertEquals(new Integer(10), PmParameterManager.getParameter(PmBasicPa.NUM_AGENTS));
 	}
+
+	@Test
+	public void testInstanceParamCopy() {
+		PmParameterManager.setParameter(PmBasicPa.NUM_AGENTS, new Integer(10));
+		PmParameterManager.setParameter(PmBasicPa.COPY_NUM_AGENTS, new Integer(
+				20));
+
+		PmParameterManager pm = PmParameterManager.getNewInstance();
+		pm.setDefaultPm(PmParameterManager.getInstance(null));
+		pm.setParam(PmBasicPa.NUM_AGENTS, new Integer(30));
+
+		pm.copyParamValue(PmBasicPa.COPY_NUM_AGENTS,
+				PmBasicPa.SPECIAL_NUM_AGENTS);
+
+		assertEquals(new Integer(20), pm.getParam(PmBasicPa.SPECIAL_NUM_AGENTS));
+	}
 }
