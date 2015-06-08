@@ -60,6 +60,7 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 	static private Logger logger = Logger.getLogger(PmDbParameterReader.class);
 
 	public static final String NOT_DEFINED = "NOT DEFINED";
+	public static final String NULL_EXPRESSION = "null";
 
 	private Connection con;
 	private final PmParameterDefinition paramSetId;
@@ -174,7 +175,10 @@ public class PmDbParameterReader extends PmAbstractParameterReader {
 										.contains(" ")) {
 									logger.warn("The class for parameter "
 											+ definition
-											+ " contains withspaces. Maybe it is some hint.");
+											+ " contains withspaces. Maybe it is some hint (" + result.getObject(i).toString() + ").");
+								} else if (result.getObject(i).toString()
+										.equals(NULL_EXPRESSION)) {
+									pm.setParam(definition, null);
 								} else if (result.getObject(i).toString()
 										.length() > 0) {
 									pm.setParam(definition, Class

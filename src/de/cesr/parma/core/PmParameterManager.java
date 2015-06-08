@@ -162,7 +162,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 	/**
 	 * Provides the requested parameter value from the main parameter manager.
 	 * 
-	 * @param parameter
+	 * @param definition
 	 * @return value
 	 */
 	public static Object getParameter(PmParameterDefinition definition) {
@@ -399,7 +399,8 @@ public class PmParameterManager extends PmAbstractParameterReader {
 		}
 
 		if (result != null
-				&& !definition.getType().isAssignableFrom(result.getClass())) {
+				&& !definition.getType().isAssignableFrom(result.getClass())
+				&& !(definition.getType() == Boolean.class && result.getClass() == Integer.class)) {
 
 			logger.warn(getFullName(definition) + ": The given value ("
 					+ result + ") of type " + result.getClass()
@@ -576,6 +577,7 @@ public class PmParameterManager extends PmAbstractParameterReader {
 				logger.warn("No PmParameterManager registered for identifier "
 						+ identifier
 						+ "! Maybe you want to call getNewInstance(identifier).");
+				logger.trace("Trace: ", new Exception());
 				return null;
 			} else {
 				return paraManagers.get(identifier);
